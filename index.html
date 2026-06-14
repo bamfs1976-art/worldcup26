@@ -4794,6 +4794,68 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
 }
 
 </style>
+<style id="analysis-css">
+/* ── Match Analysis (scoped to #sec-analysis; uses Wall Chart tokens) ──────── */
+#sec-analysis .an-wrap{max-width:900px;margin:0 auto;padding:var(--sp-6,24px) var(--sp-4,16px) var(--sp-12,48px)}
+#sec-analysis .an-head{margin-bottom:var(--sp-6,24px)}
+#sec-analysis .an-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:1px;color:var(--tx,#eaeaf2);margin:0}
+#sec-analysis .an-sub{color:var(--tx2,#a0a0bc);font-size:.95rem;margin:.25rem 0 0}
+
+#sec-analysis .an-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--sp-4,16px)}
+#sec-analysis .an-card{display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;
+  background:var(--surf1,#191927);border:1px solid var(--bdr,rgba(255,255,255,.08));
+  border-radius:var(--r-lg,14px);padding:var(--sp-5,20px);color:var(--tx,#eaeaf2);
+  transition:.18s var(--ease-out,ease);font-family:'Barlow',sans-serif}
+#sec-analysis .an-card:hover{border-color:var(--bdr-gold,rgba(240,180,41,.4));transform:translateY(-2px);
+  box-shadow:var(--sh-md,0 4px 20px rgba(0,0,0,.5))}
+#sec-analysis .an-card:focus-visible{outline:2px solid var(--gold,#F0B429);outline-offset:2px}
+#sec-analysis .an-card-top{display:flex;align-items:center;justify-content:center;gap:14px}
+#sec-analysis .an-flag{font-size:1.7rem;line-height:1}
+#sec-analysis .an-score{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--gold,#F0B429);letter-spacing:1px}
+#sec-analysis .an-card-teams{font-weight:600;font-size:1.02rem;text-align:center}
+#sec-analysis .an-card-teams span{color:var(--tx3,#8a8aa4);font-weight:400;margin:0 4px}
+#sec-analysis .an-card-meta{color:var(--tx2,#a0a0bc);font-size:.8rem;text-align:center;text-transform:uppercase;letter-spacing:.5px}
+#sec-analysis .an-card-cta{margin-top:auto;color:var(--gold,#F0B429);font-weight:600;font-size:.85rem;text-align:center}
+
+/* article view */
+#sec-analysis .an-back{background:var(--surf1,#191927);border:1px solid var(--bdr,rgba(255,255,255,.1));
+  color:var(--tx,#eaeaf2);border-radius:var(--r-md,10px);padding:9px 16px;cursor:pointer;
+  font:600 14px/1 'Barlow',sans-serif;transition:.16s}
+#sec-analysis .an-back:hover{background:var(--gold-lo,rgba(240,180,41,.12));border-color:var(--bdr-gold,rgba(240,180,41,.25));color:var(--gold,#F0B429)}
+#sec-analysis .an-back:focus-visible{outline:2px solid var(--gold,#F0B429);outline-offset:2px}
+#sec-analysis .an-foot{margin-top:var(--sp-8,32px)}
+
+#sec-analysis .an-body{margin-top:var(--sp-5,20px);color:var(--tx,#eaeaf2);font-family:'Barlow',sans-serif;
+  font-size:15.5px;line-height:1.7;max-width:760px}
+#sec-analysis .an-body h1{font-family:'Bebas Neue',sans-serif;font-size:2.1rem;letter-spacing:.5px;line-height:1.1;
+  margin:0 0 var(--sp-4,16px);color:var(--tx,#eaeaf2)}
+#sec-analysis .an-body h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.5rem;
+  margin:var(--sp-8,32px) 0 var(--sp-3,12px);padding-bottom:6px;border-bottom:2px solid var(--bdr-gold,rgba(240,180,41,.25));color:var(--tx,#eaeaf2)}
+#sec-analysis .an-body h3{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:1.2rem;
+  margin:var(--sp-6,24px) 0 var(--sp-2,8px);color:var(--gold,#F0B429)}
+#sec-analysis .an-body h4{font-weight:700;font-size:1rem;margin:var(--sp-5,20px) 0 var(--sp-2,8px);color:var(--tx,#eaeaf2)}
+#sec-analysis .an-body p{margin:0 0 var(--sp-4,16px)}
+#sec-analysis .an-body strong{color:var(--tx,#eaeaf2);font-weight:700}
+#sec-analysis .an-body em{color:var(--tx2,#a0a0bc)}
+#sec-analysis .an-body a{color:var(--gold,#F0B429);text-decoration:underline}
+#sec-analysis .an-body code{background:var(--surf2,#1e1e2e);padding:2px 6px;border-radius:5px;font-size:.9em;font-family:ui-monospace,monospace}
+#sec-analysis .an-body ul,#sec-analysis .an-body ol{margin:0 0 var(--sp-4,16px);padding-left:1.4rem}
+#sec-analysis .an-body li{margin:0 0 6px}
+#sec-analysis .an-body hr{border:0;border-top:1px solid var(--bdr,rgba(255,255,255,.1));margin:var(--sp-6,24px) 0}
+#sec-analysis .an-body blockquote{margin:0 0 var(--sp-4,16px);padding:8px 16px;border-left:3px solid var(--gold,#F0B429);
+  background:var(--surf1,#191927);color:var(--tx2,#a0a0bc);border-radius:0 8px 8px 0}
+#sec-analysis .an-tablewrap{overflow-x:auto;margin:0 0 var(--sp-4,16px);border:1px solid var(--bdr,rgba(255,255,255,.1));border-radius:var(--r-md,10px)}
+#sec-analysis .an-table{width:100%;border-collapse:collapse;font-size:14px}
+#sec-analysis .an-table th{background:var(--surf2,#1e1e2e);color:var(--tx,#eaeaf2);text-align:left;
+  padding:9px 12px;font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+#sec-analysis .an-table td{padding:8px 12px;border-top:1px solid var(--bdr,rgba(255,255,255,.07));vertical-align:top}
+#sec-analysis .an-table tr:hover td{background:var(--gold-lo,rgba(240,180,41,.06))}
+@media (max-width:600px){
+  #sec-analysis .an-title{font-size:1.6rem}
+  #sec-analysis .an-body{font-size:15px}
+}
+
+</style>
 </head>
 <body>
 <a href="#wc-main" class="wc-skip">Skip to content</a>
@@ -4900,6 +4962,7 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
         More ▾
       </button>
       <div class="more-dropdown" id="moreDropdown" role="menu">
+        <button class="more-item" onclick="showSection('analysis',null);toggleMoreMenu()" role="menuitem"><span class="mi-icon">📝</span> Match Analysis</button>
         <button class="more-item" onclick="showSection('fixtures',null);toggleMoreMenu()" role="menuitem"><span class="mi-icon">📅</span> All Fixtures</button>
         <button class="more-item" onclick="showSection('simulate',null);toggleMoreMenu()" role="menuitem"><span class="mi-icon">🔮</span> Predictor</button>
         <button class="more-item" onclick="showSection('timeline',null);toggleMoreMenu()" role="menuitem"><span class="mi-icon">📋</span> Match Log</button>
@@ -5678,6 +5741,12 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
   </div>
 </div>
 
+<section id="sec-analysis" class="section">
+  <div class="an-wrap">
+    <div id="analysisList" class="an-list"></div>
+    <div id="analysisArticle" class="an-article" style="display:none"></div>
+  </div>
+</section>
 </div>
 
 <div id="area-stats" class="wc-area" role="region" aria-label="Stats Desk">
@@ -11755,6 +11824,55 @@ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     if(meta.code){ cloudPull(true).finally(()=>{ booting = false; }); startPolling(); }
     else { booting = false; }
   })();
+})();
+
+</script>
+<!-- 1b. Match Analysis: data + renderer (Tournament area) -->
+<script src="data/analysis.js"></script>
+<script>
+/* ── Match Analysis renderer (global; Tournament area) ─────────────────────── */
+(function(){
+  function renderList(){
+    var L = document.getElementById('analysisList');
+    if (!L || !window.WC_ANALYSIS) return;
+    L.innerHTML =
+      '<div class="an-head"><h2 class="an-title">Match Analysis</h2>'+
+      '<p class="an-sub">In-depth tactical reports from the opening round.</p></div>'+
+      '<div class="an-grid">' + window.WC_ANALYSIS.map(function(a){
+        return '<button class="an-card" type="button" onclick="openAnalysis(\''+a.id+'\')" aria-label="Read analysis: '+a.home+' versus '+a.away+'">'+
+          '<div class="an-card-top"><span class="an-flag">'+a.homeFlag+'</span>'+
+            '<span class="an-score">'+a.score+'</span>'+
+            '<span class="an-flag">'+a.awayFlag+'</span></div>'+
+          '<div class="an-card-teams">'+a.home+' <span>v</span> '+a.away+'</div>'+
+          '<div class="an-card-meta">Group '+a.group+' &middot; '+a.date+'</div>'+
+          '<div class="an-card-cta">Read analysis &rarr;</div>'+
+        '</button>';
+      }).join('') + '</div>';
+  }
+  window.openAnalysis = function(id){
+    var a = (window.WC_ANALYSIS||[]).find(function(x){ return x.id===id; });
+    if (!a) return;
+    var list = document.getElementById('analysisList');
+    var art = document.getElementById('analysisArticle');
+    if (list) list.style.display = 'none';
+    if (!art) return;
+    art.style.display = 'block';
+    art.innerHTML =
+      '<button class="an-back" type="button" onclick="backToAnalysisList()">&larr; All analyses</button>'+
+      '<article class="an-body">'+a.html+'</article>'+
+      '<div class="an-foot"><button class="an-back" type="button" onclick="backToAnalysisList()">&larr; All analyses</button></div>';
+    try{ window.scrollTo({top:0}); }catch(e){}
+  };
+  window.backToAnalysisList = function(){
+    var art = document.getElementById('analysisArticle');
+    var list = document.getElementById('analysisList');
+    if (art) art.style.display = 'none';
+    if (list) list.style.display = 'block';
+    try{ window.scrollTo({top:0}); }catch(e){}
+  };
+  function init(){ renderList(); }
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 
 </script>
