@@ -15466,6 +15466,178 @@ function renderHome(){
 renderHome();
 renderResults();
 
+;
+/* ── live data ── */
+/* ── Stats Desk → live data (runs INSIDE the Stats IIFE) ──────────────────────
+   Refreshes the football-data.org snapshots (FD_STANDINGS / FD_KNOCKOUT /
+   FD_RESULTS) at runtime via the same-origin proxy /api/fd. Falls back to ESPN
+   (no key), then to the baked snapshot. Never throws into the page. */
+(function(){
+  var POLL_MS = 90_000, THROTTLE_MS = 30_000, lastFetch = 0, mode = 'snapshot';
+
+  // code → emoji: prefer the snapshot's own flags, else derive from the FLAG ISO map
+  var SNAP_EMOJI = {};
+  try { (FD_STANDINGS||[]).forEach(function(g){ (g.rows||[]).forEach(function(r){ if(r.c&&r.f) SNAP_EMOJI[r.c]=r.f; }); }); } catch(e){}
+  function isoToEmoji(iso){
+    if(!iso || iso.length!==2) return '';
+    return String.fromCodePoint.apply(null, iso.toUpperCase().split('').map(function(c){ return 0x1F1E6 + (c.charCodeAt(0)-65); }));
+  }
+  function codeEmoji(code){ return SNAP_EMOJI[code] || (typeof FLAG!=='undefined' && isoToEmoji(FLAG[code])) || '🏳️'; }
+
+  // ── transforms: football-data v4 → the app's FD_* shapes ──
+  function mapStandings(json){
+    var out = [];
+    (json.standings||[]).forEach(function(s){
+      if(s.type!=='TOTAL') return;
+      var grp = (s.group||'').replace('GROUP_','');
+      if(!grp || !Array.isArray(s.table)) return;
+      out.push({ g:grp, rows:s.table.map(function(t){
+        var tm = t.team||{};
+        return { c:tm.tla, f:codeEmoji(tm.tla), n:tm.shortName||tm.name,
+          p:t.playedGames, w:t.won, d:t.draw, l:t.lost,
+          gf:t.goalsFor, ga:t.goalsAgainst, gd:t.goalDifference, pts:t.points };
+      }) });
+    });
+    out.sort(function(a,b){ return a.g<b.g?-1:1; });
+    return out;
+  }
+  var KO_STAGES = ['LAST_32','LAST_16','QUARTER_FINALS','SEMI_FINALS','THIRD_PLACE','FINAL'];
+  function mapMatches(json){
+    var results = {}, ko = [];
+    (json.matches||[]).forEach(function(m){
+      var h = m.homeTeam&&m.homeTeam.tla, a = m.awayTeam&&m.awayTeam.tla;
+      var ft = (m.score&&m.score.fullTime)||{}, stage = m.stage||'';
+      if(stage==='GROUP_STAGE'){
+        if(m.status==='FINISHED' && h && a && ft.home!=null){
+          var pair = [h,a].sort();
+          results[pair.join('|')] = (pair[0]===h) ? (ft.home+'-'+ft.away) : (ft.away+'-'+ft.home);
+        }
+      } else if(KO_STAGES.indexOf(stage)>=0){
+        var fin = m.status==='FINISHED' && ft.home!=null;
+        ko.push({ st:stage, d:(m.utcDate||'').replace('T',' ').slice(0,16),
+          hc:h||null, hf:h?codeEmoji(h):'', hn:(m.homeTeam&&(m.homeTeam.shortName||m.homeTeam.name))||null,
+          ac:a||null, af:a?codeEmoji(a):'', an:(m.awayTeam&&(m.awayTeam.shortName||m.awayTeam.name))||null,
+          sc: fin ? (ft.home+'-'+ft.away) : null, status:m.status });
+      }
+    });
+    return { results:results, ko:ko };
+  }
+
+  function applyStandings(arr){ if(!arr.length) return false; FD_STANDINGS.length=0; arr.forEach(function(x){ FD_STANDINGS.push(x); }); return true; }
+  function applyMatches(mm){
+    var changed = false;
+    Object.keys(mm.results).forEach(function(k){
+      FD_RESULTS[k] = mm.results[k];
+      if(typeof RESULTS!=='undefined'){
+        if(!RESULTS[k]) RESULTS[k] = { s:mm.results[k], auto:true };
+        else if(RESULTS[k].auto) RESULTS[k].s = mm.results[k];
+      }
+      changed = true;
+    });
+    if(mm.ko.length){ FD_KNOCKOUT.length=0; mm.ko.forEach(function(x){ FD_KNOCKOUT.push(x); }); changed = true; }
+    return changed;
+  }
+  function rerender(){
+    try{ if(typeof renderStandings==='function') renderStandings(); }catch(e){}
+    try{ if(typeof renderKnockout==='function') renderKnockout(); }catch(e){}
+    try{ if(typeof renderResults==='function') renderResults(); }catch(e){}
+  }
+
+  // ── ESPN no-key fallback: rebuild group standings from finished ESPN matches ──
+  function _norm(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z]/g,''); }
+  var ESPN_ALIAS = { unitedstates:'usa', southkorea:'korearepublic', czechrepublic:'czechia',
+    iran:'iran', turkey:'turkiye', bosniaandherzegovina:'bosniaherzegovina', capeverde:'caboverde' };
+  async function liveFromEspn(){
+    if(typeof wls_fetchEspn!=='function' || typeof TEAMS==='undefined') return false;
+    var ms = await wls_fetchEspn();
+    if(!Array.isArray(ms) || !ms.length) return false;
+    var byNorm = {}; TEAMS.forEach(function(t){ byNorm[_norm(t.n)] = t; });
+    function resolve(name){ var k=_norm(name); return byNorm[k] || byNorm[ESPN_ALIAS[k]] || null; }
+    var acc = {}, used = 0;
+    ms.forEach(function(m){
+      if(!m.completed) return;
+      var H = resolve(m.home), A = resolve(m.away); if(!H||!A) return;
+      used++;
+      [[H,m.homeScore,m.awayScore],[A,m.awayScore,m.homeScore]].forEach(function(x){
+        var t=x[0], gf=x[1], ga=x[2], s=acc[t.c]||(acc[t.c]={p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0});
+        s.p++; s.gf+=gf; s.ga+=ga; s.gd=s.gf-s.ga;
+        if(gf>ga){ s.w++; s.pts+=3; } else if(gf===ga){ s.d++; s.pts++; } else s.l++;
+      });
+    });
+    if(!used) return false;
+    FD_STANDINGS.forEach(function(g){
+      g.rows.forEach(function(r){ var s=acc[r.c]; if(s) Object.assign(r,s); });
+      g.rows.sort(function(a,b){ return b.pts-a.pts || b.gd-a.gd || b.gf-a.gf; });
+    });
+    return true;
+  }
+
+  // ── status pill + manual refresh button (injected once into the Standings panel) ──
+  function ensureBar(){
+    var panel = __SQ.querySelector ? __SQ.querySelector('#panel-standings') : null;
+    panel = panel || document.getElementById('panel-standings');
+    if(!panel || panel.querySelector('#fdLiveBar')) return panel && panel.querySelector('#fdLiveBar');
+    var bar = document.createElement('div');
+    bar.id = 'fdLiveBar';
+    bar.style.cssText = 'display:flex;align-items:center;gap:.6rem;margin:0 0 .8rem;flex-wrap:wrap';
+    bar.innerHTML = '<span id="fdLivePill" style="display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;'
+      + 'font-weight:600;padding:4px 10px;border-radius:999px;background:var(--surface-2,#1e293b);color:var(--text-2,#94a3b8)">● Snapshot</span>'
+      + '<button id="fdLiveBtn" class="btn sm" style="font-size:.8rem">↻ Live</button>'
+      + '<span id="fdLiveMeta" style="font-size:.72rem;color:var(--text-3,#64748b)"></span>';
+    panel.insertBefore(bar, panel.firstChild);
+    bar.querySelector('#fdLiveBtn').addEventListener('click', function(){ refresh(true); });
+    return bar;
+  }
+  function setPill(state, meta){
+    mode = state;
+    var pill = document.getElementById('fdLivePill'); if(pill){
+      var map = { live:['🔴 Live','#22c55e'], espn:['🟠 Live (ESPN)','#f59e0b'], snapshot:['● Snapshot','var(--text-2,#94a3b8)'] };
+      var v = map[state]||map.snapshot; pill.textContent = v[0]; pill.style.color = v[1];
+    }
+    var m = document.getElementById('fdLiveMeta'); if(m) m.textContent = meta||'';
+  }
+
+  function hhmm(){ var d=new Date(); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+
+  async function refresh(force){
+    var now = Date.now();
+    if(!force && now-lastFetch < THROTTLE_MS) return;
+    lastFetch = now;
+    ensureBar();
+    // 1) primary: serverless proxy
+    try{
+      var st = await fetch('/api/fd?resource=standings', { cache:'no-store' });
+      if(st.ok){
+        var sjson = await st.json();
+        var ok = applyStandings(mapStandings(sjson));
+        try{ var mt = await fetch('/api/fd?resource=matches', { cache:'no-store' });
+             if(mt.ok) applyMatches(mapMatches(await mt.json())); }catch(e){}
+        if(ok){ rerender(); setPill('live','updated '+hhmm()); return; }
+      }
+    }catch(e){}
+    // 2) fallback: ESPN (no key)
+    try{ if(await liveFromEspn()){ rerender(); setPill('espn','updated '+hhmm()); return; } }catch(e){}
+    // 3) snapshot
+    setPill('snapshot', (typeof FD_UPDATED!=='undefined'&&FD_UPDATED) ? ('as of '+String(FD_UPDATED).slice(0,10)) : '');
+  }
+
+  // hook the Stats tab switch so opening a data tab triggers a throttled refresh
+  try{
+    if(typeof selectTab==='function'){
+      var _orig = selectTab;
+      selectTab = function(tab){
+        var r = _orig.apply(this, arguments);
+        var id = tab && tab.id;
+        if(id==='tab-standings' || id==='tab-results' || id==='tab-knockout'){ ensureBar(); refresh(false); }
+        return r;
+      };
+    }
+  }catch(e){}
+
+  function init(){ ensureBar(); refresh(true); setInterval(function(){ refresh(false); }, POLL_MS); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
 })();
 </script>
 <!-- 4. Fantasy — IIFE isolated -->

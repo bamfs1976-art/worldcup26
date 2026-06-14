@@ -34,9 +34,30 @@ deployable output — this folder — is self‑contained and needs no build ste
 
 ## Deploy
 
-No build step. Deploy the whole folder (Netlify drag‑and‑drop the `wc26` folder,
-or connect the repo). `index.html`, `/data`, `_headers`, `_redirects`,
-`netlify.toml` and the icons must travel together.
+No client build step. For the **live data** feature (below) deploy via
+**Git‑connected Netlify** so the serverless function ships:
+Netlify → *Add new site → Import from Git → worldcup26* (publish dir `.`, no build
+command — `netlify.toml` sets this). Without functions, drag‑and‑drop still works;
+the app just uses the baked snapshot + ESPN fallback.
+
+## Live data (Stats Desk)
+
+The Stats Desk Standings / Knockout / Results refresh live from football‑data.org
+through a serverless proxy that keeps the API key server‑side.
+
+- **Function:** `netlify/functions/fd.mjs` — whitelisted proxy (`standings`,
+  `matches`, `scorers`), reachable at `/api/fd?resource=…` (see `netlify.toml`).
+- **Fallback chain:** proxy → **ESPN** (no key, computed client‑side) → baked
+  snapshot. A pill in the Standings tab shows which is active (🔴 Live / 🟠 Live
+  (ESPN) / ● Snapshot). The page never breaks if the proxy or key is absent.
+
+**One‑time setup to enable the authoritative live feed:**
+1. Get a free token at <https://www.football-data.org/client/register>.
+2. In Netlify → *Site settings → Environment variables*, add
+   **`FOOTBALL_DATA_TOKEN`** = your token, then redeploy.
+
+Until then the app runs on the ESPN feed + snapshot automatically. `.env.example`
+documents the variable; never commit a real token.
 
 ## Data persistence
 

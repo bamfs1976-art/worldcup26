@@ -1,8 +1,18 @@
 # World Cup 2026 — unified app (Wall Chart + Stats Desk + Fantasy).
-# Static index.html + /data/*.js, no build step. Deploy by folder upload.
+# Static index.html + /data/*.js + a serverless proxy for live data.
+# Deploy via Git-connected Netlify (Functions need a build/deploy step).
 [build]
   publish = "."
   command = ""
+
+[functions]
+  directory = "netlify/functions"
+
+# Clean path for the football-data.org proxy. Requires env var FOOTBALL_DATA_TOKEN.
+[[redirects]]
+  from = "/api/fd"
+  to = "/.netlify/functions/fd"
+  status = 200
 
 [[headers]]
   for = "/*"
