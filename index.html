@@ -4815,7 +4815,32 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
 #sec-analysis .an-card-teams{font-weight:600;font-size:1.02rem;text-align:center}
 #sec-analysis .an-card-teams span{color:var(--tx3,#8a8aa4);font-weight:400;margin:0 4px}
 #sec-analysis .an-card-meta{color:var(--tx2,#a0a0bc);font-size:.8rem;text-align:center;text-transform:uppercase;letter-spacing:.5px}
+#sec-analysis .an-card-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+#sec-analysis .an-tag{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px;
+  padding:3px 8px;border-radius:999px;background:var(--surf2,#1e1e2e);color:var(--tx2,#a0a0bc);
+  border:1px solid var(--bdr,rgba(255,255,255,.08))}
+#sec-analysis .an-tag-rate{color:var(--gold,#F0B429);border-color:var(--bdr-gold,rgba(240,180,41,.25));background:var(--gold-lo,rgba(240,180,41,.1))}
 #sec-analysis .an-card-cta{margin-top:auto;color:var(--gold,#F0B429);font-weight:600;font-size:.85rem;text-align:center}
+
+/* player ratings table */
+#sec-analysis .an-ratings{margin-top:var(--sp-8,32px)}
+#sec-analysis .an-ratings h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.5rem;
+  margin:0 0 4px;padding-bottom:6px;border-bottom:2px solid var(--bdr-gold,rgba(240,180,41,.25));color:var(--tx,#eaeaf2)}
+#sec-analysis .an-rsub{color:var(--tx2,#a0a0bc);font-size:.85rem;margin:0 0 var(--sp-3,12px)}
+#sec-analysis .an-rtable td{vertical-align:middle}
+#sec-analysis .an-rk{width:32px;text-align:center;color:var(--tx3,#8a8aa4);font-variant-numeric:tabular-nums}
+#sec-analysis .an-pl{font-weight:600;color:var(--tx,#eaeaf2)}
+#sec-analysis .an-bar{width:40%;min-width:90px}
+#sec-analysis .an-bar span{display:block;height:8px;border-radius:999px;
+  background:linear-gradient(90deg,var(--gold,#F0B429),var(--gold-hi,#F5C842))}
+#sec-analysis .an-bar-h{width:40%}
+#sec-analysis .an-rt{text-align:right;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.5px;width:64px}
+#sec-analysis .an-rt.r-elite{color:#F0B429}
+#sec-analysis .an-rt.r-good{color:#22C55E}
+#sec-analysis .an-rt.r-ok{color:var(--tx,#eaeaf2)}
+#sec-analysis .an-rt.r-poor{color:#F59E0B}
+#sec-analysis .an-rt.r-bad{color:#EF4444}
+#sec-analysis .an-note{color:var(--tx2,#a0a0bc);font-style:italic}
 
 /* article view */
 #sec-analysis .an-back{background:var(--surf1,#191927);border:1px solid var(--bdr,rgba(255,255,255,.1));
@@ -11845,9 +11870,37 @@ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
             '<span class="an-flag">'+a.awayFlag+'</span></div>'+
           '<div class="an-card-teams">'+a.home+' <span>v</span> '+a.away+'</div>'+
           '<div class="an-card-meta">Group '+a.group+' &middot; '+a.date+'</div>'+
-          '<div class="an-card-cta">Read analysis &rarr;</div>'+
+          '<div class="an-card-tags">'+
+            (a.ratingsOnly ? '' : '<span class="an-tag">Tactical report</span>')+
+            ((a.ratings&&a.ratings.length) ? '<span class="an-tag an-tag-rate">'+a.ratings.length+' player ratings</span>' : '')+
+          '</div>'+
+          '<div class="an-card-cta">'+(a.ratingsOnly ? 'View ratings' : 'Read analysis')+' &rarr;</div>'+
         '</button>';
       }).join('') + '</div>';
+  }
+  function ratingClass(r){
+    if (r >= 8.5) return 'r-elite';
+    if (r >= 7.5) return 'r-good';
+    if (r >= 6.5) return 'r-ok';
+    if (r >= 5)   return 'r-poor';
+    return 'r-bad';
+  }
+  function ratingsTable(a){
+    if (!a.ratings || !a.ratings.length) return '';
+    var rows = a.ratings.map(function(p, i){
+      var pct = Math.max(0, Math.min(100, (p.rating/10)*100));
+      return '<tr>'+
+        '<td class="an-rk">'+(i+1)+'</td>'+
+        '<td class="an-pl">'+p.player+'</td>'+
+        '<td class="an-bar"><span style="width:'+pct.toFixed(0)+'%"></span></td>'+
+        '<td class="an-rt '+ratingClass(p.rating)+'">'+p.rating.toFixed(2)+'</td>'+
+      '</tr>';
+    }).join('');
+    return '<section class="an-ratings"><h2>Player Match Ratings</h2>'+
+      '<p class="an-rsub">Model-generated ratings out of 10, highest first.</p>'+
+      '<div class="an-tablewrap"><table class="an-table an-rtable"><thead><tr>'+
+        '<th>#</th><th>Player</th><th class="an-bar-h">Form</th><th>Rating</th>'+
+      '</tr></thead><tbody>'+rows+'</tbody></table></div></section>';
   }
   window.openAnalysis = function(id){
     var a = (window.WC_ANALYSIS||[]).find(function(x){ return x.id===id; });
@@ -11859,7 +11912,7 @@ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     art.style.display = 'block';
     art.innerHTML =
       '<button class="an-back" type="button" onclick="backToAnalysisList()">&larr; All analyses</button>'+
-      '<article class="an-body">'+a.html+'</article>'+
+      '<article class="an-body">'+a.html+ratingsTable(a)+'</article>'+
       '<div class="an-foot"><button class="an-back" type="button" onclick="backToAnalysisList()">&larr; All analyses</button></div>';
     try{ window.scrollTo({top:0}); }catch(e){}
   };
