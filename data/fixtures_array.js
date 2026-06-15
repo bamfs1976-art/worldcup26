@@ -16,7 +16,7 @@ const FIXTURES = {
   "KSA|URU":{d:"2026-06-15 22:00",v:"Miami",m:13},
   "CPV|ESP":{d:"2026-06-15 17:00",v:"Atlanta",m:14},
   "IRN|NZL":{d:"2026-06-16 04:00",v:"Los Angeles",m:15},
-  "BEL|EGY":{d:"2026-06-15 22:00",v:"Seattle",m:16},
+  "BEL|EGY":{d:"2026-06-15 19:00",v:"Seattle",m:16},
   "FRA|SEN":{d:"2026-06-16 19:00",v:"New York/NJ",m:17},
   "IRQ|NOR":{d:"2026-06-16 22:00",v:"Boston",m:18},
   "ALG|ARG":{d:"2026-06-17 01:00",v:"Kansas City",m:19},
