@@ -4,3 +4,5 @@
 .DS_Store
 Thumbs.db
 *.log
+# Source documents (e.g. FIFA post-match report PDFs) — reference only, never committed
+*.pdf
