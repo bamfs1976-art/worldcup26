@@ -4352,6 +4352,8 @@ html[data-theme="dark"] #area-stats{
 #area-stats .tabbtn{padding:.45rem .85rem;border-radius:9px;border:0;background:none;color:var(--text-2);font-weight:600;cursor:pointer;font-size:.88rem;transition:.15s}
 #area-stats .tabbtn:hover{color:var(--text)}
 #area-stats .tabbtn[aria-selected="true"]{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm);font-weight:700}
+#area-stats .disc-fbtn{padding:.4rem .7rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-weight:600;cursor:pointer;font-size:.82rem}
+#area-stats .disc-fbtn[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
 #area-stats .heatbar{height:14px;border-radius:999px;background:var(--surface-3);overflow:hidden}
 #area-stats .heatfill{height:100%;border-radius:999px;transition:width .3s}
 #area-stats select,
@@ -5812,6 +5814,7 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
     <button class="tabbtn" role="tab" id="tab-scorers" aria-controls="panel-scorers" aria-selected="false" tabindex="-1">Scorers</button>
     <button class="tabbtn" role="tab" id="tab-intel" aria-controls="panel-intel" aria-selected="false" tabindex="-1">Intel</button>
     <button class="tabbtn" role="tab" id="tab-refs" aria-controls="panel-refs" aria-selected="false" tabindex="-1">Referees</button>
+    <button class="tabbtn" role="tab" id="tab-discipline" aria-controls="panel-discipline" aria-selected="false" tabindex="-1">Discipline</button>
     <button class="tabbtn" role="tab" id="tab-tracker" aria-controls="panel-tracker" aria-selected="false" tabindex="-1">Tracker</button>
     <button class="tabbtn" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false" tabindex="-1">Guide</button>
   </div>
@@ -5946,6 +5949,79 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
         </tr></thead>
         <tbody id="refRows"></tbody>
       </table>
+    </div>
+  </section>
+
+  <!-- DISCIPLINE -->
+  <section id="panel-discipline" role="tabpanel" aria-labelledby="tab-discipline" hidden>
+    <div class="surface" style="border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <p class="muted" style="margin:0;font-size:.88rem">Player bookings and sending-offs from the FIFA post-match summary reports. Covers matchday 1 (matches 1–24). The referee column is joined from the confirmed match-official appointments.</p>
+    </div>
+    <div id="discKpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.7rem;margin-bottom:1rem"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem">
+      <div class="surface" style="border-radius:12px;overflow:auto">
+        <table>
+          <caption class="visually-hidden">Player bookings leaderboard</caption>
+          <thead><tr>
+            <th scope="col" style="text-align:left;padding:.6rem .7rem">Player</th>
+            <th scope="col" style="text-align:left;padding:.6rem .5rem">Team</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">🟨</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">🟥</th>
+            <th scope="col" style="text-align:right;padding:.6rem .7rem">Total</th>
+          </tr></thead>
+          <tbody id="discPlayerRows"></tbody>
+        </table>
+      </div>
+      <div class="surface" style="border-radius:12px;overflow:auto">
+        <table>
+          <caption class="visually-hidden">Team discipline this tournament</caption>
+          <thead><tr>
+            <th scope="col" style="text-align:left;padding:.6rem .7rem">Team</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">🟨</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">🟥</th>
+            <th scope="col" style="text-align:right;padding:.6rem .7rem">Total</th>
+          </tr></thead>
+          <tbody id="discTeamRows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="surface" style="border-radius:12px;overflow:auto;margin-top:1rem">
+      <table>
+        <caption class="visually-hidden">Referee strictness — cards per match</caption>
+        <thead><tr>
+          <th scope="col" style="text-align:left;padding:.6rem .7rem">Referee</th>
+          <th scope="col" style="text-align:right;padding:.6rem .5rem">Matches</th>
+          <th scope="col" style="text-align:right;padding:.6rem .5rem">🟨</th>
+          <th scope="col" style="text-align:right;padding:.6rem .5rem">🟥</th>
+          <th scope="col" style="text-align:right;padding:.6rem .5rem">Cards</th>
+          <th scope="col" style="text-align:right;padding:.6rem .7rem">Cards / match</th>
+        </tr></thead>
+        <tbody id="discRefRows"></tbody>
+      </table>
+    </div>
+    <div class="surface" style="border-radius:12px;padding:1rem;margin-top:1rem">
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem">
+        <input id="discSearch" placeholder="Filter by player, team or match…" style="flex:1;min-width:180px;padding:.5rem .7rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text)">
+        <div id="discFilter" style="display:flex;gap:.4rem">
+          <button type="button" data-f="all" aria-pressed="true" class="disc-fbtn">All</button>
+          <button type="button" data-f="Yellow" aria-pressed="false" class="disc-fbtn">🟨 Yellow</button>
+          <button type="button" data-f="Red" aria-pressed="false" class="disc-fbtn">🟥 Red</button>
+        </div>
+      </div>
+      <div style="overflow:auto">
+        <table>
+          <caption class="visually-hidden">Full card log</caption>
+          <thead><tr>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">M</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">Min</th>
+            <th scope="col" style="text-align:left;padding:.6rem .7rem">Player</th>
+            <th scope="col" style="text-align:left;padding:.6rem .5rem">Team</th>
+            <th scope="col" style="text-align:center;padding:.6rem .5rem">Card</th>
+            <th scope="col" style="text-align:left;padding:.6rem .7rem">Fixture</th>
+          </tr></thead>
+          <tbody id="discLogRows"></tbody>
+        </table>
+      </div>
     </div>
   </section>
 
@@ -11937,6 +12013,7 @@ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
 <script src="data/qual_array.js"></script>
 <script src="data/fd_standings.js"></script>
 <script src="data/fd_extra.js"></script>
+<script src="data/discipline.js"></script>
 <!-- 3. Stats Desk — IIFE isolated -->
 <script>
 (function(){
@@ -14914,6 +14991,74 @@ function renderRefs(){
   });
 }
 
+// ---- discipline (player bookings from post-match reports, matches 1-24) ----
+const DISC_FLAG={"Mexico":"mx","South Africa":"za","Korea Republic":"kr","Czechia":"cz","Canada":"ca","Bosnia and Herzegovina":"ba","USA":"us","Paraguay":"py","Haiti":"ht","Scotland":"gb-sct","Australia":"au","Türkiye":"tr","Brazil":"br","Morocco":"ma","Qatar":"qa","Switzerland":"ch","Côte d'Ivoire":"ci","Ecuador":"ec","Germany":"de","Curaçao":"cw","Netherlands":"nl","Japan":"jp","Sweden":"se","Tunisia":"tn","Saudi Arabia":"sa","Uruguay":"uy","Spain":"es","Cabo Verde":"cv","IR Iran":"ir","New Zealand":"nz","Belgium":"be","Egypt":"eg","France":"fr","Senegal":"sn","Iraq":"iq","Norway":"no","Argentina":"ar","Algeria":"dz","Austria":"at","Jordan":"jo","Ghana":"gh","Panama":"pa","England":"gb-eng","Croatia":"hr","Portugal":"pt","Congo DR":"cd","Uzbekistan":"uz","Colombia":"co"};
+function discFlag(name){ const iso=DISC_FLAG[name]; return iso?`<img class="crest" src="https://flagcdn.com/w40/${iso}.png" width="22" height="16" alt="" loading="lazy" style="vertical-align:-3px;margin-right:.4rem" onerror="this.style.display='none'">`:''; }
+let _discFilt="all", _discQ="";
+function renderDiscipline(){
+  const D=window.WC_DISCIPLINE; if(!D||!$("discKpis")) return;
+  const cards=D.cards, matches=D.matches;
+  // referee per match, joined from the FIXTURES appointment overlay
+  const refByNo={}; Object.values(FIXTURES).forEach(fx=>{ if(fx&&fx.ref&&fx.m!=null) refByNo[fx.m]=fx.ref; });
+  // KPIs
+  const tot=cards.length, y=cards.filter(c=>c.card==="Yellow").length, r=tot-y;
+  const played=matches.length, withCards=new Set(cards.map(c=>c.m)).size;
+  const kpis=[["Total cards",tot,""],["Yellow",y,"warn"],["Red",r,"danger"],["Matches",played,""],["Cards / match",(tot/played).toFixed(2),""],["0-card games",played-withCards,""]];
+  $("discKpis").innerHTML=kpis.map(k=>`<div class="surface" style="border-radius:12px;padding:.7rem .9rem"><div class="num" style="font-size:1.6rem;font-weight:800;line-height:1;color:${k[2]==='warn'?'var(--warn)':k[2]==='danger'?'var(--danger)':'var(--text)'}">${k[1]}</div><div class="muted" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;margin-top:.3rem">${k[0]}</div></div>`).join("");
+  // player leaderboard
+  const pmap={};
+  cards.forEach(c=>{ const id=c.player+"|"+c.team; (pmap[id]||(pmap[id]={player:c.player,team:c.team,y:0,r:0,t:0})); if(c.card==="Yellow")pmap[id].y++; else pmap[id].r++; pmap[id].t++; });
+  const players=Object.values(pmap).sort((a,b)=>b.t-a.t||b.r-a.r||a.player.localeCompare(b.player));
+  $("discPlayerRows").innerHTML=players.map(p=>
+    `<tr><td style="padding:.5rem .7rem">${esc(p.player)}</td><td class="muted" style="white-space:nowrap">${discFlag(p.team)}${esc(p.team)}</td>`+
+    `<td style="text-align:right" class="num">${p.y||'–'}</td>`+
+    `<td style="text-align:right;color:var(--danger)" class="num">${p.r||'–'}</td>`+
+    `<td style="text-align:right" class="num"><strong>${p.t}</strong></td></tr>`).join("");
+  // team discipline — actual tournament counts
+  const tmap={};
+  cards.forEach(c=>{ (tmap[c.team]||(tmap[c.team]={team:c.team,y:0,r:0,t:0})); if(c.card==="Yellow")tmap[c.team].y++; else tmap[c.team].r++; tmap[c.team].t++; });
+  const teams=Object.values(tmap).sort((a,b)=>b.t-a.t||b.r-a.r||a.team.localeCompare(b.team));
+  $("discTeamRows").innerHTML=teams.map(t=>
+    `<tr><td style="padding:.5rem .7rem;white-space:nowrap">${discFlag(t.team)}${esc(t.team)}</td>`+
+    `<td style="text-align:right" class="num">${t.y||'–'}</td>`+
+    `<td style="text-align:right;color:var(--danger)" class="num">${t.r||'–'}</td>`+
+    `<td style="text-align:right" class="num"><strong>${t.t}</strong></td></tr>`).join("");
+  // referee strictness — cards per match for each appointed official
+  const rmap={};
+  matches.forEach(m=>{
+    const ref=refByNo[m.m]; if(!ref) return;
+    (rmap[ref]||(rmap[ref]={ref,games:0,y:0,r:0,t:0}));
+    rmap[ref].games++;
+    cards.filter(c=>c.m===m.m).forEach(c=>{ if(c.card==="Yellow")rmap[ref].y++; else rmap[ref].r++; rmap[ref].t++; });
+  });
+  const refs=Object.values(rmap).sort((a,b)=>(b.t/b.games)-(a.t/a.games)||b.t-a.t||a.ref.localeCompare(b.ref));
+  const refTb=$("discRefRows");
+  refTb.innerHTML=refs.length?refs.map(r=>
+    `<tr><td style="padding:.5rem .7rem">${esc(r.ref)}</td>`+
+    `<td style="text-align:right" class="num">${r.games}</td>`+
+    `<td style="text-align:right" class="num">${r.y||'–'}</td>`+
+    `<td style="text-align:right;color:var(--danger)" class="num">${r.r||'–'}</td>`+
+    `<td style="text-align:right" class="num">${r.t}</td>`+
+    `<td style="text-align:right" class="num"><strong>${(r.t/r.games).toFixed(2)}</strong></td></tr>`).join("")
+    :`<tr><td colspan="6" class="muted" style="padding:.7rem">No referee appointments matched these matches yet.</td></tr>`;
+  drawDiscLog();
+}
+function drawDiscLog(){
+  const D=window.WC_DISCIPLINE; if(!D||!$("discLogRows")) return;
+  const mByNo={}; D.matches.forEach(m=>mByNo[m.m]=m);
+  const rows=D.cards.slice().sort((a,b)=>a.m-b.m||(a.min||0)-(b.min||0)).filter(c=>{
+    if(_discFilt!=="all"&&c.card!==_discFilt) return false;
+    if(_discQ){ const m=mByNo[c.m], fx=m?m.home+" "+m.away:""; if(!(c.player+" "+c.team+" "+fx+" m"+c.m).toLowerCase().includes(_discQ)) return false; }
+    return true;
+  });
+  $("discLogRows").innerHTML=rows.map(c=>{
+    const m=mByNo[c.m], fx=m?`${esc(m.home)} ${m.score} ${esc(m.away)}`:"";
+    return `<tr><td style="text-align:right" class="num">${c.m}</td><td style="text-align:right" class="num">${c.min?c.min+"'":''}</td>`+
+      `<td style="padding:.5rem .7rem">${esc(c.player)}</td><td class="muted" style="white-space:nowrap">${discFlag(c.team)}${esc(c.team)}</td>`+
+      `<td style="text-align:center">${c.card==="Yellow"?'🟨':'🟥'}</td><td class="muted">${fx}</td></tr>`;
+  }).join("");
+}
+
 // ---- tabs ----
 const tabs=[...__SQ.querySelectorAll('[role=tab]')];
 function selectTab(tab){
@@ -15277,6 +15422,12 @@ fillGoalSelects();
 renderScorers();
 fillIntelSelect();
 renderRefs();
+renderDiscipline();
+if($("discSearch")) $("discSearch").addEventListener("input",e=>{ _discQ=e.target.value.trim().toLowerCase(); drawDiscLog(); });
+__SQ.querySelectorAll("#discFilter .disc-fbtn").forEach(b=>b.addEventListener("click",()=>{
+  __SQ.querySelectorAll("#discFilter .disc-fbtn").forEach(x=>x.setAttribute("aria-pressed","false"));
+  b.setAttribute("aria-pressed","true"); _discFilt=b.dataset.f; drawDiscLog();
+}));
 renderStandings();
 renderKnockout();
 renderTracker();
