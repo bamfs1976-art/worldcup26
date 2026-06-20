@@ -1,5 +1,6 @@
 // World Cup 2026 — player discipline (bookings) extracted from the FIFA
-// post-match summary reports. Coverage: matchday 1 (matches 1–24).
+// post-match summary reports. Coverage: matches 1–32 (matchday 1 complete,
+// plus matchday 2 matches 25–32).
 // cards: {m:matchNo, team, side:"home"|"away", player, min, card:"Yellow"|"Red"}
 // matches: {m:matchNo, home, away, score}
 // Referee per match is NOT stored here — it is joined at render time from the
@@ -60,7 +61,36 @@ window.WC_DISCIPLINE = {
     {m:23, team:"Portugal", side:"home", player:"SEMEDO", min:88, card:"Yellow"},
     {m:23, team:"Congo DR", side:"away", player:"Chancel MBEMBA", min:32, card:"Yellow"},
     {m:24, team:"Uzbekistan", side:"home", player:"Abdukodir KHUSANOV", min:34, card:"Yellow"},
-    {m:24, team:"Colombia", side:"away", player:"Johan MOJICA", min:7, card:"Yellow"}
+    {m:24, team:"Colombia", side:"away", player:"Johan MOJICA", min:7, card:"Yellow"},
+    {m:25, team:"Czechia", side:"home", player:"Ladislav KREJCI", min:75, card:"Yellow"},
+    {m:25, team:"South Africa", side:"away", player:"Teboho MOKOENA", min:33, card:"Yellow"},
+    {m:25, team:"South Africa", side:"away", player:"Thalente MBATHA", min:40, card:"Yellow"},
+    {m:26, team:"Switzerland", side:"home", player:"Nico ELVEDI", min:65, card:"Yellow"},
+    {m:26, team:"Bosnia and Herzegovina", side:"away", player:"Tarik MUHAREMOVIC", min:80, card:"Red"},
+    {m:26, team:"Bosnia and Herzegovina", side:"away", player:"Amar DEDIC", min:59, card:"Yellow"},
+    {m:26, team:"Bosnia and Herzegovina", side:"away", player:"Edin DZEKO", min:61, card:"Yellow"},
+    {m:27, team:"Canada", side:"home", player:"Derek CORNELIUS", min:9, card:"Yellow"},
+    {m:27, team:"Qatar", side:"away", player:"Derek HOMAM", min:31, card:"Red"},
+    {m:27, team:"Qatar", side:"away", player:"Richie ASSIM", min:51, card:"Red"},
+    {m:27, team:"Qatar", side:"away", player:"Niko AHMED", min:62, card:"Yellow"},
+    {m:28, team:"Korea Republic", side:"away", player:"PAIK", min:58, card:"Yellow"},
+    {m:28, team:"Korea Republic", side:"away", player:"LEE", min:4, card:"Yellow"},
+    {m:29, team:"Brazil", side:"home", player:"SANTOS", min:65, card:"Yellow"},
+    {m:29, team:"Haiti", side:"away", player:"Carlens ARCUS", min:4, card:"Yellow"},
+    {m:29, team:"Haiti", side:"away", player:"Danley JEAN", min:72, card:"Yellow"},
+    {m:29, team:"Haiti", side:"away", player:"Frantzdy PIERROT", min:49, card:"Yellow"},
+    {m:30, team:"Scotland", side:"home", player:"Andy ROBERTSON", min:65, card:"Yellow"},
+    {m:30, team:"Morocco", side:"away", player:"Issa DIOP", min:23, card:"Yellow"},
+    {m:31, team:"Türkiye", side:"home", player:"Eren ELMALI", min:71, card:"Yellow"},
+    {m:31, team:"Paraguay", side:"away", player:"Miguel ALMIRON", min:48, card:"Red"},
+    {m:31, team:"Paraguay", side:"away", player:"Matias GALARZA", min:4, card:"Yellow"},
+    {m:32, team:"USA", side:"home", player:"Chris RICHARDS", min:93, card:"Yellow"},
+    {m:32, team:"USA", side:"home", player:"Antonee ROBINSON", min:56, card:"Yellow"},
+    {m:32, team:"USA", side:"home", player:"BALOGUN", min:89, card:"Yellow"},
+    {m:32, team:"Australia", side:"away", player:"Alessandro CIRCATI", min:32, card:"Yellow"},
+    {m:32, team:"Australia", side:"away", player:"Jacob ITALIANO", min:89, card:"Yellow"},
+    {m:32, team:"Australia", side:"away", player:"Jordan BOS", min:16, card:"Yellow"},
+    {m:32, team:"Australia", side:"away", player:"Harry SOUTTAR", min:89, card:"Yellow"}
   ],
   matches: [
     {m:1, home:"Mexico", away:"South Africa", score:"2-0"},
@@ -86,6 +116,14 @@ window.WC_DISCIPLINE = {
     {m:21, home:"Ghana", away:"Panama", score:"1-0"},
     {m:22, home:"England", away:"Croatia", score:"4-2"},
     {m:23, home:"Portugal", away:"Congo DR", score:"1-1"},
-    {m:24, home:"Uzbekistan", away:"Colombia", score:"1-3"}
+    {m:24, home:"Uzbekistan", away:"Colombia", score:"1-3"},
+    {m:25, home:"Czechia", away:"South Africa", score:"1-1"},
+    {m:26, home:"Switzerland", away:"Bosnia and Herzegovina", score:"4-1"},
+    {m:27, home:"Canada", away:"Qatar", score:"6-0"},
+    {m:28, home:"Mexico", away:"Korea Republic", score:"1-0"},
+    {m:29, home:"Brazil", away:"Haiti", score:"3-0"},
+    {m:30, home:"Scotland", away:"Morocco", score:"0-1"},
+    {m:31, home:"Türkiye", away:"Paraguay", score:"0-1"},
+    {m:32, home:"USA", away:"Australia", score:"2-0"}
   ]
 };
