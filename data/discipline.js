@@ -1,6 +1,6 @@
 // World Cup 2026 — player discipline (bookings) extracted from the FIFA
-// post-match summary reports. Coverage: matches 1–32 (matchday 1 complete,
-// plus matchday 2 matches 25–32).
+// post-match summary reports. Coverage: matches 1–36 (matchday 1 complete,
+// plus matchday 2 matches 25–36).
 // cards: {m:matchNo, team, side:"home"|"away", player, min, card:"Yellow"|"Red"}
 // matches: {m:matchNo, home, away, score}
 // Referee per match is NOT stored here — it is joined at render time from the
@@ -90,7 +90,16 @@ window.WC_DISCIPLINE = {
     {m:32, team:"Australia", side:"away", player:"Alessandro CIRCATI", min:32, card:"Yellow"},
     {m:32, team:"Australia", side:"away", player:"Jacob ITALIANO", min:89, card:"Yellow"},
     {m:32, team:"Australia", side:"away", player:"Jordan BOS", min:16, card:"Yellow"},
-    {m:32, team:"Australia", side:"away", player:"Harry SOUTTAR", min:89, card:"Yellow"}
+    {m:32, team:"Australia", side:"away", player:"Harry SOUTTAR", min:89, card:"Yellow"},
+    {m:34, team:"Ecuador", side:"home", player:"Jordy ALCIVAR", min:38, card:"Yellow"},
+    {m:34, team:"Curaçao", side:"away", player:"Jurien GAARI", min:75, card:"Yellow"},
+    {m:34, team:"Curaçao", side:"away", player:"Juninho BACUNA", min:53, card:"Yellow"},
+    {m:34, team:"Curaçao", side:"away", player:"Livano COMENENCIA", min:56, card:"Yellow"},
+    {m:34, team:"Curaçao", side:"away", player:"Leandro BACUNA", min:39, card:"Yellow"},
+    {m:34, team:"Curaçao", side:"away", player:"Gervane KASTANEER", min:91, card:"Yellow"},
+    {m:35, team:"Sweden", side:"away", player:"Gabriel GUDMUNDSSON", min:53, card:"Yellow"},
+    {m:35, team:"Sweden", side:"away", player:"Yasin AYARI", min:75, card:"Yellow"},
+    {m:35, team:"Sweden", side:"away", player:"Lucas BERGVALL", min:80, card:"Yellow"}
   ],
   matches: [
     {m:1, home:"Mexico", away:"South Africa", score:"2-0"},
@@ -124,6 +133,10 @@ window.WC_DISCIPLINE = {
     {m:29, home:"Brazil", away:"Haiti", score:"3-0"},
     {m:30, home:"Scotland", away:"Morocco", score:"0-1"},
     {m:31, home:"Türkiye", away:"Paraguay", score:"0-1"},
-    {m:32, home:"USA", away:"Australia", score:"2-0"}
+    {m:32, home:"USA", away:"Australia", score:"2-0"},
+    {m:33, home:"Germany", away:"Côte d'Ivoire", score:"2-1"},
+    {m:34, home:"Ecuador", away:"Curaçao", score:"0-0"},
+    {m:35, home:"Netherlands", away:"Sweden", score:"5-1"},
+    {m:36, home:"Tunisia", away:"Japan", score:"0-4"}
   ]
 };
