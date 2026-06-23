@@ -1,6 +1,6 @@
 // World Cup 2026 — player discipline (bookings) extracted from the FIFA
-// post-match summary reports. Coverage: matches 1–40 (matchday 1 complete,
-// plus matchday 2 matches 25–40).
+// post-match summary reports. Coverage: matches 1–44 (matchday 1 complete,
+// plus matchday 2 matches 25–44).
 // cards: {m:matchNo, team, side:"home"|"away", player, min, card:"Yellow"|"Red"}
 // matches: {m:matchNo, home, away, score}
 // Referee per match is NOT stored here — it is joined at render time from the
@@ -111,7 +111,14 @@ window.WC_DISCIPLINE = {
     {m:39, team:"IR Iran", side:"away", player:"Saeid EZATOLAHI", min:33, card:"Yellow"},
     {m:40, team:"New Zealand", side:"home", player:"Sarpreet SINGH", min:20, card:"Yellow"},
     {m:40, team:"New Zealand", side:"home", player:"Callum OMAR", min:34, card:"Yellow"},
-    {m:40, team:"Egypt", side:"away", player:"Liberato MOHANAD", min:17, card:"Yellow"}
+    {m:40, team:"Egypt", side:"away", player:"Liberato MOHANAD", min:17, card:"Yellow"},
+    {m:42, team:"Iraq", side:"away", player:"AMIR", min:6, card:"Yellow"},
+    {m:43, team:"Argentina", side:"home", player:"Facundo MEDINA", min:76, card:"Yellow"},
+    {m:43, team:"Argentina", side:"home", player:"Leandro PAREDES", min:92, card:"Yellow"},
+    {m:43, team:"Austria", side:"away", player:"Stefan POSCH", min:40, card:"Yellow"},
+    {m:43, team:"Austria", side:"away", player:"Konrad LAIMER", min:76, card:"Yellow"},
+    {m:44, team:"Jordan", side:"home", player:"ABUDAHAB", min:64, card:"Yellow"},
+    {m:44, team:"Algeria", side:"away", player:"Ramiz ZERROUKI", min:44, card:"Yellow"}
   ],
   matches: [
     {m:1, home:"Mexico", away:"South Africa", score:"2-0"},
@@ -153,6 +160,10 @@ window.WC_DISCIPLINE = {
     {m:37, home:"Uruguay", away:"Cabo Verde", score:"2-2"},
     {m:38, home:"Spain", away:"Saudi Arabia", score:"4-0"},
     {m:39, home:"Belgium", away:"IR Iran", score:"0-0"},
-    {m:40, home:"New Zealand", away:"Egypt", score:"1-3"}
+    {m:40, home:"New Zealand", away:"Egypt", score:"1-3"},
+    {m:41, home:"Norway", away:"Senegal", score:"3-2"},
+    {m:42, home:"France", away:"Iraq", score:"3-0"},
+    {m:43, home:"Argentina", away:"Austria", score:"2-0"},
+    {m:44, home:"Jordan", away:"Algeria", score:"1-2"}
   ]
 };
