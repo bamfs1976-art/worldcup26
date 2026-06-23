@@ -1,6 +1,6 @@
 // World Cup 2026 — player discipline (bookings) extracted from the FIFA
-// post-match summary reports. Coverage: matches 1–36 (matchday 1 complete,
-// plus matchday 2 matches 25–36).
+// post-match summary reports. Coverage: matches 1–40 (matchday 1 complete,
+// plus matchday 2 matches 25–40).
 // cards: {m:matchNo, team, side:"home"|"away", player, min, card:"Yellow"|"Red"}
 // matches: {m:matchNo, home, away, score}
 // Referee per match is NOT stored here — it is joined at render time from the
@@ -99,7 +99,19 @@ window.WC_DISCIPLINE = {
     {m:34, team:"Curaçao", side:"away", player:"Gervane KASTANEER", min:91, card:"Yellow"},
     {m:35, team:"Sweden", side:"away", player:"Gabriel GUDMUNDSSON", min:53, card:"Yellow"},
     {m:35, team:"Sweden", side:"away", player:"Yasin AYARI", min:75, card:"Yellow"},
-    {m:35, team:"Sweden", side:"away", player:"Lucas BERGVALL", min:80, card:"Yellow"}
+    {m:35, team:"Sweden", side:"away", player:"Lucas BERGVALL", min:80, card:"Yellow"},
+    {m:37, team:"Uruguay", side:"home", player:"Rodrigo BENTANCUR", min:20, card:"Yellow"},
+    {m:37, team:"Uruguay", side:"home", player:"Mathias OLIVERA", min:58, card:"Yellow"},
+    {m:37, team:"Cabo Verde", side:"away", player:"Sebastian DINEY", min:93, card:"Yellow"},
+    {m:37, team:"Cabo Verde", side:"away", player:"Mathias SIDNY", min:5, card:"Yellow"},
+    {m:38, team:"Saudi Arabia", side:"away", player:"SALEM", min:30, card:"Yellow"},
+    {m:38, team:"Saudi Arabia", side:"away", player:"Martin MOHAMED", min:60, card:"Yellow"},
+    {m:39, team:"Belgium", side:"home", player:"LUKAKU", min:3, card:"Yellow"},
+    {m:39, team:"Belgium", side:"home", player:"Nathan NGOY", min:66, card:"Red"},
+    {m:39, team:"IR Iran", side:"away", player:"Saeid EZATOLAHI", min:33, card:"Yellow"},
+    {m:40, team:"New Zealand", side:"home", player:"Sarpreet SINGH", min:20, card:"Yellow"},
+    {m:40, team:"New Zealand", side:"home", player:"Callum OMAR", min:34, card:"Yellow"},
+    {m:40, team:"Egypt", side:"away", player:"Liberato MOHANAD", min:17, card:"Yellow"}
   ],
   matches: [
     {m:1, home:"Mexico", away:"South Africa", score:"2-0"},
@@ -137,6 +149,10 @@ window.WC_DISCIPLINE = {
     {m:33, home:"Germany", away:"Côte d'Ivoire", score:"2-1"},
     {m:34, home:"Ecuador", away:"Curaçao", score:"0-0"},
     {m:35, home:"Netherlands", away:"Sweden", score:"5-1"},
-    {m:36, home:"Tunisia", away:"Japan", score:"0-4"}
+    {m:36, home:"Tunisia", away:"Japan", score:"0-4"},
+    {m:37, home:"Uruguay", away:"Cabo Verde", score:"2-2"},
+    {m:38, home:"Spain", away:"Saudi Arabia", score:"4-0"},
+    {m:39, home:"Belgium", away:"IR Iran", score:"0-0"},
+    {m:40, home:"New Zealand", away:"Egypt", score:"1-3"}
   ]
 };
