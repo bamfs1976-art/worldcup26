@@ -16655,10 +16655,57 @@ function renderFixture(fx) {
   `;
 }
 
+const MD3_STAKES_HTML = `
+  <div class="panel" style="border:1px solid var(--amber)">
+    <h2>🏁 Matchday 3 — what's at stake</h2>
+    <p style="color: var(--muted); font-size: 13px; margin-top:0;">Final group round, read off results through MD2. Qualify: <strong style="color:var(--text)">top 2 of each group + the 8 best 3rd-placed teams</strong>, so 3rd place is still live. The two games in a group kick off simultaneously.</p>
+    <h3>Headline games (most riding on the result)</h3>
+    <ol style="margin:0 0 4px 18px;padding:0;font-size:13.5px;line-height:1.7">
+      <li><strong>🏴󠁧󠁢󠁳󠁣󠁴󠁿 Brazil v Scotland (Grp C)</strong> — Scotland win-and-through; Brazil/Morocco/Scotland chase two spots.</li>
+      <li><strong>Belgium v New Zealand (Grp G)</strong> — must-win for Belgium or they're out.</li>
+      <li><strong>Australia v Paraguay (Grp D)</strong> — level on points, straight knockout for 2nd.</li>
+      <li><strong>Japan v Sweden (Grp F)</strong> — Sweden must win; Japan defending a top-2 place.</li>
+      <li><strong>Algeria v Austria (Grp J)</strong> — head-to-head for 2nd (Austria ahead on GD).</li>
+      <li><strong>Egypt v Iran (G)</strong>, <strong>Cabo Verde v Saudi / Spain v Uruguay (H)</strong>, <strong>Korea v South Africa (A)</strong> — qualification deciders, with Uruguay among the big names sweating.</li>
+    </ol>
+    <h3>By group</h3>
+    <div style="overflow:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+      <thead><tr style="text-align:left;color:var(--muted)">
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Grp</th>
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Standings after MD2</th>
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Key MD3 game — stake</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:6px 8px"><strong>A</strong></td><td style="padding:6px 8px">Mexico 6 ✅ · Korea 3 · Czechia 1 · S.Africa 1</td><td style="padding:6px 8px"><strong>Korea v South Africa</strong> — decides 2nd; RSA must win.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>B</strong></td><td style="padding:6px 8px">Canada 4 · Switzerland 4 · Bosnia 1 · Qatar 1</td><td style="padding:6px 8px">Canada v Switzerland — top spot (both ~safe). Bosnia v Qatar — 3rd-place survival.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>C</strong></td><td style="padding:6px 8px">Brazil 4 · Morocco 4 · Scotland 3 · Haiti 0</td><td style="padding:6px 8px"><strong>Brazil v Scotland</strong> — Scotland win-or-bust; tightest group.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>D</strong></td><td style="padding:6px 8px">USA 6 ✅ · Australia 3 · Paraguay 3 · Türkiye 0</td><td style="padding:6px 8px"><strong>Australia v Paraguay</strong> — straight shootout for 2nd.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>E</strong></td><td style="padding:6px 8px">Germany 6 ✅ · Côte d'Ivoire 3 · Ecuador 1 · Curaçao 1</td><td style="padding:6px 8px">Côte d'Ivoire v Curaçao — Ivorians' spot / Curaçao's last chance.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>F</strong></td><td style="padding:6px 8px">Netherlands 4 · Japan 4 · Sweden 3 · Tunisia 0</td><td style="padding:6px 8px"><strong>Japan v Sweden</strong> — Sweden must win. NED v Tunisia — top spot.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>G</strong></td><td style="padding:6px 8px">Egypt 4 · Iran 2 · Belgium 2 · N.Zealand 1</td><td style="padding:6px 8px"><strong>Belgium v New Zealand</strong> — Belgium must win. Egypt v Iran — top + Iran's fate.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>H</strong></td><td style="padding:6px 8px">Spain 4 ✅ · Uruguay 2 · Cabo Verde 2 · Saudi 1</td><td style="padding:6px 8px"><strong>Cabo Verde v Saudi</strong> + <strong>Spain v Uruguay</strong> — 2nd wide open; Uruguay sweating.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>I</strong></td><td style="padding:6px 8px">France 6 ✅ · Norway 6 ✅ · Senegal 0 ❌ · Iraq 0 ❌</td><td style="padding:6px 8px">France v Norway — top spot only (both through). Iraq v Senegal dead.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>J</strong></td><td style="padding:6px 8px">Argentina 6 ✅ · Austria 3 · Algeria 3 · Jordan 0</td><td style="padding:6px 8px"><strong>Algeria v Austria</strong> — head-to-head for 2nd. Arg v Jordan dead.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>K</strong></td><td style="padding:6px 8px" colspan="2"><span style="color:var(--muted)">Pending — MD2 results (matches 45–48) not in yet.</span></td></tr>
+        <tr><td style="padding:6px 8px"><strong>L</strong></td><td style="padding:6px 8px" colspan="2"><span style="color:var(--muted)">Pending — MD2 results (matches 45–48) not in yet.</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h3>Fantasy angle for Round 3</h3>
+    <ul style="margin:0;font-size:13.5px;line-height:1.6">
+      <li><strong>Target must-win sides at full strength:</strong> Belgium (v NZ), Sweden (v Japan), Cabo Verde, Uruguay, Côte d'Ivoire, Algeria/Austria — they'll go for it.</li>
+      <li><strong>Beware rotation in already-qualified group-toppers:</strong> Mexico, USA, Germany, Argentina, France/Norway, Spain may rest key men — captaincy risk.</li>
+      <li><strong>Dead rubbers to avoid:</strong> Iraq v Senegal, Argentina v Jordan, Türkiye v USA — low motivation / heavy rotation.</li>
+    </ul>
+    <p style="color: var(--muted); font-size: 12px;">Standings computed from match results to date; a planning aid, confirm line-ups before deadline.</p>
+  </div>
+`;
 function renderRound(round) {
   const fxs = FIXTURES.filter(f => f.round === round).sort((a,b) => b.gap - a.gap);
   const container = document.getElementById(`tab-round${round}`);
   container.innerHTML = `
+    ${round === 3 ? MD3_STAKES_HTML : ""}
     <div class="panel">
       <h2>Round ${round} fixtures, sorted by ranking gap</h2>
       <p style="color: var(--muted); font-size: 13px; margin-top: 0;">${fxs.length} matches. Bigger gap means bigger fantasy upside for the favourite. Edit player picks below, changes save automatically.</p>
