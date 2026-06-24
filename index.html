@@ -15562,6 +15562,43 @@ const JEOPARDY=[
   {m:71,g:"K",t:"topspot",s:"Top spot — both through (Colombia 6, Portugal 4)."},
   {m:72,g:"K",t:"survival",s:"Congo DR's slim 3rd-place hope; Uzbekistan eliminated."}
 ];
+const J_ORD=["","1st","2nd","3rd","4th"];
+const SCEN_PTS={MEX:6,KOR:3,CZE:1,RSA:1,CAN:4,SUI:4,BIH:1,QAT:1,BRA:4,MAR:4,SCO:3,HAI:0,USA:6,AUS:3,PAR:3,TUR:0,GER:6,CIV:3,ECU:1,CUW:1,NED:4,JPN:4,SWE:3,TUN:0,EGY:4,IRN:2,BEL:2,NZL:1,ESP:4,URU:2,CPV:2,KSA:1,FRA:6,NOR:6,SEN:0,IRQ:0,ARG:6,AUT:3,ALG:3,JOR:0,COL:6,POR:4,COD:1,UZB:0,ENG:4,GHA:4,CRO:3,PAN:0};
+const SCEN_GAMES={A:[["CZE","MEX"],["RSA","KOR"]],B:[["CAN","SUI"],["BIH","QAT"]],C:[["BRA","SCO"],["HAI","MAR"]],D:[["TUR","USA"],["AUS","PAR"]],E:[["CIV","CUW"],["ECU","GER"]],F:[["JPN","SWE"],["NED","TUN"]],G:[["EGY","IRN"],["BEL","NZL"]],H:[["CPV","KSA"],["ESP","URU"]],I:[["FRA","NOR"],["IRQ","SEN"]],J:[["ALG","AUT"],["ARG","JOR"]],K:[["COL","POR"],["COD","UZB"]],L:[["ENG","PAN"],["CRO","GHA"]]};
+function scenTiers(g,r1,r2){
+  const games=SCEN_GAMES[g], codes=games.flat(), pts={};
+  codes.forEach(c=>pts[c]=SCEN_PTS[c]);
+  [[games[0],r1],[games[1],r2]].forEach(function(pair){ const gm=pair[0], r=pair[1], a=gm[0], b=gm[1]; if(r===0)pts[a]+=3; else if(r===2)pts[b]+=3; else {pts[a]+=1;pts[b]+=1;} });
+  const ranked=codes.slice().sort((x,y)=>pts[y]-pts[x]);
+  const tiers=[]; let i=0;
+  while(i<ranked.length){ let j=i; while(j+1<ranked.length && pts[ranked[j+1]]===pts[ranked[i]]) j++; tiers.push({teams:ranked.slice(i,j+1),pts:pts[ranked[i]],from:i+1,to:j+1}); i=j+1; }
+  return tiers;
+}
+function scenOutHtml(g,r1,r2){
+  return scenTiers(g,r1,r2).map(function(t){
+    const col = t.to<=2?'var(--good)':(t.from>=4?'var(--text-3)':'var(--warn)');
+    const pos = t.from===t.to?J_ORD[t.from]:J_ORD[t.from]+'–'+J_ORD[t.to];
+    const teams=t.teams.map(c=>`${jCrest(c)}${esc(J_NAME[c]||c)}`).join('  ');
+    const tie=t.teams.length>1?` <span class="faint" style="font-size:.68rem">⚖️ level on ${t.pts} — GD/goals decide</span>`:'';
+    return `<div style="padding:.18rem 0;font-size:.82rem"><span style="display:inline-block;min-width:46px;font-weight:800;color:${col}">${pos}</span>${teams} <span class="faint">(${t.pts} pts)</span>${tie}</div>`;
+  }).join("")+`<div class="faint" style="font-size:.66rem;margin-top:.3rem">Top 2 qualify (green); 3rd may still go through as a best-third. Ties resolved on goal difference then goals scored.</div>`;
+}
+function scenUI(g){
+  const games=SCEN_GAMES[g];
+  const opt=function(gm){ const a=gm[0],b=gm[1]; return [[0,(J_NAME[a]||a)+" win"],[1,"Draw"],[2,(J_NAME[b]||b)+" win"]].map(o=>`<option value="${o[0]}"${o[0]===1?' selected':''}>${esc(o[1])}</option>`).join(""); };
+  const sel=function(k){ return `<select class="scen-sel" data-g="${g}" data-game="${k}" style="background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.3rem .5rem;font-size:.78rem">${opt(games[k])}</select>`; };
+  return `<div style="margin-top:.7rem;border-top:1px dashed var(--border);padding-top:.6rem">
+    <div class="faint" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem">What-if — pick the final results</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">${sel(0)}${sel(1)}</div>
+    <div class="scen-out" id="scenOut-${g}" style="margin-top:.5rem"></div>
+  </div>`;
+}
+function updateScen(g){
+  const s0=__SQ.querySelector(`#jeopardyOut .scen-sel[data-g="${g}"][data-game="0"]`);
+  const s1=__SQ.querySelector(`#jeopardyOut .scen-sel[data-g="${g}"][data-game="1"]`);
+  const o=document.getElementById("scenOut-"+g);
+  if(s0&&s1&&o) o.innerHTML=scenOutHtml(g,+s0.value,+s1.value);
+}
 function jCrest(code){ const iso=FLAG[code]; return iso?`<img class="crest" src="https://flagcdn.com/w40/${iso}.png" width="20" height="15" alt="" loading="lazy" style="vertical-align:-2px;margin-right:.3rem" onerror="this.style.display='none'">`:''; }
 function jBadge(t){ const m=J_TIER[t]||J_TIER.dead; return `<span style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:${m.c};background:color-mix(in srgb,${m.c} 16%,transparent);padding:.18rem .45rem;border-radius:6px;white-space:nowrap">${m.l}</span>`; }
 function renderJeopardy(){
@@ -15594,8 +15631,11 @@ function renderJeopardy(){
     return `<div class="surface" style="border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem">
       <div style="font-weight:800;font-family:'Bricolage Grotesque',sans-serif;margin-bottom:.5rem">Group ${g}</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:.7rem">${cards}</div>
+      ${scenUI(g)}
     </div>`;
   }).join("");
+  __SQ.querySelectorAll('#jeopardyOut .scen-sel').forEach(function(sl){ sl.addEventListener('change',function(){ updateScen(sl.dataset.g); }); });
+  groups.forEach(updateScen);
 }
 renderRefs();
 renderDiscipline();
