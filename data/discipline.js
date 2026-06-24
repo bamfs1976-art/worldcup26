@@ -1,6 +1,5 @@
 // World Cup 2026 — player discipline (bookings) extracted from the FIFA
-// post-match summary reports. Coverage: matches 1–44 (matchday 1 complete,
-// plus matchday 2 matches 25–44).
+// post-match summary reports. Coverage: matches 1–48 — the complete group stage.
 // cards: {m:matchNo, team, side:"home"|"away", player, min, card:"Yellow"|"Red"}
 // matches: {m:matchNo, home, away, score}
 // Referee per match is NOT stored here — it is joined at render time from the
@@ -118,7 +117,16 @@ window.WC_DISCIPLINE = {
     {m:43, team:"Austria", side:"away", player:"Stefan POSCH", min:40, card:"Yellow"},
     {m:43, team:"Austria", side:"away", player:"Konrad LAIMER", min:76, card:"Yellow"},
     {m:44, team:"Jordan", side:"home", player:"ABUDAHAB", min:64, card:"Yellow"},
-    {m:44, team:"Algeria", side:"away", player:"Ramiz ZERROUKI", min:44, card:"Yellow"}
+    {m:44, team:"Algeria", side:"away", player:"Ramiz ZERROUKI", min:44, card:"Yellow"},
+    {m:45, team:"England", side:"home", player:"Declan RICE", min:41, card:"Yellow"},
+    {m:45, team:"Ghana", side:"away", player:"Inaki WILLIAMS", min:60, card:"Yellow"},
+    {m:46, team:"Panama", side:"home", player:"Yoel BARCENAS", min:61, card:"Yellow"},
+    {m:46, team:"Croatia", side:"away", player:"Petar SUCIC", min:92, card:"Yellow"},
+    {m:47, team:"Portugal", side:"home", player:"VEIGA", min:68, card:"Yellow"},
+    {m:47, team:"Uzbekistan", side:"away", player:"Odiljon XAMROBEKOV", min:14, card:"Yellow"},
+    {m:48, team:"Colombia", side:"home", player:"Jhon LUCUMI", min:56, card:"Yellow"},
+    {m:48, team:"Colombia", side:"home", player:"Jefferson LERMA", min:94, card:"Yellow"},
+    {m:48, team:"Congo DR", side:"away", player:"Charles PICKEL", min:93, card:"Yellow"}
   ],
   matches: [
     {m:1, home:"Mexico", away:"South Africa", score:"2-0"},
@@ -164,6 +172,10 @@ window.WC_DISCIPLINE = {
     {m:41, home:"Norway", away:"Senegal", score:"3-2"},
     {m:42, home:"France", away:"Iraq", score:"3-0"},
     {m:43, home:"Argentina", away:"Austria", score:"2-0"},
-    {m:44, home:"Jordan", away:"Algeria", score:"1-2"}
+    {m:44, home:"Jordan", away:"Algeria", score:"1-2"},
+    {m:45, home:"England", away:"Ghana", score:"0-0"},
+    {m:46, home:"Panama", away:"Croatia", score:"0-1"},
+    {m:47, home:"Portugal", away:"Uzbekistan", score:"5-0"},
+    {m:48, home:"Colombia", away:"Congo DR", score:"1-0"}
   ]
 };
