@@ -5815,6 +5815,7 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
     <button class="tabbtn" role="tab" id="tab-intel" aria-controls="panel-intel" aria-selected="false" tabindex="-1">Intel</button>
     <button class="tabbtn" role="tab" id="tab-refs" aria-controls="panel-refs" aria-selected="false" tabindex="-1">Referees</button>
     <button class="tabbtn" role="tab" id="tab-discipline" aria-controls="panel-discipline" aria-selected="false" tabindex="-1">Discipline</button>
+    <button class="tabbtn" role="tab" id="tab-jeopardy" aria-controls="panel-jeopardy" aria-selected="false" tabindex="-1">Jeopardy</button>
     <button class="tabbtn" role="tab" id="tab-tracker" aria-controls="panel-tracker" aria-selected="false" tabindex="-1">Tracker</button>
     <button class="tabbtn" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false" tabindex="-1">Guide</button>
   </div>
@@ -6023,6 +6024,15 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
         </table>
       </div>
     </div>
+  </section>
+
+  <!-- MATCH JEOPARDY -->
+  <section id="panel-jeopardy" role="tabpanel" aria-labelledby="tab-jeopardy" hidden>
+    <div class="surface" style="border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <p class="muted" style="margin:0;font-size:.88rem">What's riding on the final group games (matchday 3, matches 49–72) — read off the standings through MD2 — alongside the appointed referee and their card risk. The two games in a group kick off simultaneously.</p>
+      <div id="jeopardySummary" style="margin-top:.6rem;display:flex;gap:.4rem;flex-wrap:wrap"></div>
+    </div>
+    <div id="jeopardyOut"></div>
   </section>
 
   <!-- TRACKER -->
@@ -15523,8 +15533,73 @@ fillMatchupSelects();
 fillGoalSelects();
 renderScorers();
 fillIntelSelect();
+// ---- match jeopardy: what's riding on the final group games (MD3) ----
+const J_NAME={MEX:"Mexico",RSA:"South Africa",KOR:"Korea Republic",CZE:"Czechia",CAN:"Canada",SUI:"Switzerland",BIH:"Bosnia & H.",QAT:"Qatar",BRA:"Brazil",SCO:"Scotland",HAI:"Haiti",MAR:"Morocco",USA:"USA",TUR:"Türkiye",PAR:"Paraguay",AUS:"Australia",CIV:"Côte d'Ivoire",CUW:"Curaçao",ECU:"Ecuador",GER:"Germany",JPN:"Japan",SWE:"Sweden",NED:"Netherlands",TUN:"Tunisia",EGY:"Egypt",IRN:"IR Iran",BEL:"Belgium",NZL:"New Zealand",CPV:"Cabo Verde",KSA:"Saudi Arabia",ESP:"Spain",URU:"Uruguay",FRA:"France",NOR:"Norway",IRQ:"Iraq",SEN:"Senegal",ALG:"Algeria",AUT:"Austria",ARG:"Argentina",JOR:"Jordan",COL:"Colombia",POR:"Portugal",COD:"Congo DR",UZB:"Uzbekistan",GHA:"Ghana",PAN:"Panama",ENG:"England",CRO:"Croatia"};
+const J_TIER={ko:{l:"Knockout",c:"var(--danger)",r:0},decider:{l:"Decider",c:"var(--warn)",r:1},survival:{l:"Survival",c:"#fb7185",r:2},longshot:{l:"Longshot",c:"var(--text-2)",r:3},topspot:{l:"Top spot",c:"var(--accent)",r:4},qualify:{l:"Qualify",c:"var(--good)",r:5},dead:{l:"Dead rubber",c:"var(--text-3)",r:6}};
+const JEOPARDY=[
+  {m:49,g:"C",t:"ko",s:"Win-or-bust for Scotland; Brazil need a point. The tightest group — Brazil, Morocco and Scotland all chasing two spots."},
+  {m:50,g:"C",t:"qualify",s:"Morocco win = through, likely top; Haiti already eliminated."},
+  {m:51,g:"B",t:"topspot",s:"Top spot — both all but through (Canada +6, Switzerland +3)."},
+  {m:52,g:"B",t:"survival",s:"Survival — both on 1 pt; the winner keeps a slim 3rd-place hope, loser is out."},
+  {m:53,g:"A",t:"longshot",s:"Czechia's last chance — must beat Mexico (already through and top) and hope."},
+  {m:54,g:"A",t:"decider",s:"Decides 2nd behind Mexico — South Africa must win, Korea Republic need only a draw."},
+  {m:55,g:"E",t:"decider",s:"Côte d'Ivoire avoid defeat and they're 2nd; Curaçao's last chance (GD −6)."},
+  {m:56,g:"E",t:"longshot",s:"Germany through and top; Ecuador must win to gatecrash 2nd."},
+  {m:57,g:"F",t:"ko",s:"Sweden must win to qualify; Japan need only a draw."},
+  {m:58,g:"F",t:"topspot",s:"Top spot — Netherlands big favourites; Tunisia eliminated."},
+  {m:59,g:"D",t:"dead",s:"Dead rubber — USA top and through, Türkiye out (USA may rotate)."},
+  {m:60,g:"D",t:"ko",s:"Straight knockout for 2nd — winner advances, loser out (both level on 3)."},
+  {m:61,g:"I",t:"topspot",s:"Both already through — top spot and R32 seeding only."},
+  {m:62,g:"I",t:"dead",s:"Dead rubber — both eliminated."},
+  {m:63,g:"G",t:"decider",s:"Decides top spot and Iran's fate — Egypt need a point, Iran likely must win."},
+  {m:64,g:"G",t:"ko",s:"Belgium MUST win or they're OUT; New Zealand need a win to survive."},
+  {m:65,g:"H",t:"decider",s:"Cabo Verde win = qualify ahead of Uruguay; Saudi Arabia's last chance."},
+  {m:66,g:"H",t:"ko",s:"Spain near-through and top; Uruguay must avoid a slip or risk going out."},
+  {m:67,g:"L",t:"qualify",s:"England seal top spot against an eliminated Panama."},
+  {m:68,g:"L",t:"ko",s:"Croatia MUST win or risk going out; Ghana go through with a draw."},
+  {m:69,g:"J",t:"ko",s:"Head-to-head for 2nd — Austria lead on GD, Algeria must win."},
+  {m:70,g:"J",t:"dead",s:"Dead rubber — Argentina top and through, Jordan out (Argentina may rotate)."},
+  {m:71,g:"K",t:"topspot",s:"Top spot — both through (Colombia 6, Portugal 4)."},
+  {m:72,g:"K",t:"survival",s:"Congo DR's slim 3rd-place hope; Uzbekistan eliminated."}
+];
+function jCrest(code){ const iso=FLAG[code]; return iso?`<img class="crest" src="https://flagcdn.com/w40/${iso}.png" width="20" height="15" alt="" loading="lazy" style="vertical-align:-2px;margin-right:.3rem" onerror="this.style.display='none'">`:''; }
+function jBadge(t){ const m=J_TIER[t]||J_TIER.dead; return `<span style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:${m.c};background:color-mix(in srgb,${m.c} 16%,transparent);padding:.18rem .45rem;border-radius:6px;white-space:nowrap">${m.l}</span>`; }
+function renderJeopardy(){
+  const out=$("jeopardyOut"); if(!out) return;
+  const byNum={}; Object.entries(FIXTURES).forEach(([k,fx])=>{ if(fx&&fx.m!=null) byNum[fx.m]={codes:k.split("|"),fx}; });
+  const counts={}; JEOPARDY.forEach(j=>counts[j.t]=(counts[j.t]||0)+1);
+  const sumEl=$("jeopardySummary");
+  if(sumEl) sumEl.innerHTML=["ko","decider","survival","topspot","qualify","longshot","dead"].filter(t=>counts[t]).map(t=>`<span style="display:inline-flex;align-items:center;gap:.3rem">${jBadge(t)}<span class="faint" style="font-size:.74rem">${counts[t]}</span></span>`).join("");
+  const groups=[...new Set(JEOPARDY.map(j=>j.g))].sort();
+  out.innerHTML=groups.map(g=>{
+    const games=JEOPARDY.filter(j=>j.g===g).sort((a,b)=>J_TIER[a.t].r-J_TIER[b.t].r);
+    const cards=games.map(j=>{
+      const e=byNum[j.m]; if(!e) return "";
+      const [a,b]=e.codes, fx=e.fx, tier=J_TIER[j.t]||J_TIER.dead;
+      const teams=`${jCrest(a)}${esc(J_NAME[a]||a)} <span class="faint">v</span> ${jCrest(b)}${esc(J_NAME[b]||b)}`;
+      const rf=refForFixture(fx), ypg=rf?rf.ypg:null;
+      const refName=fx.ref?esc(fx.ref):"TBC";
+      const pill = ypg!=null
+        ? `<span style="font-weight:700;color:${refRiskHex(ypg)}">🟨 ${ypg.toFixed(1)}</span><span class="faint" style="font-size:.68rem">/g</span>`
+        : `<span class="faint" style="font-size:.7rem">no rating</span>`;
+      return `<div style="background:var(--surface-2);border-radius:10px;padding:.6rem .75rem;border-left:3px solid ${tier.c}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
+          <span style="font-weight:700;line-height:1.3">${teams}</span>${jBadge(j.t)}
+        </div>
+        <div class="faint" style="font-size:.72rem;margin:.3rem 0">M${j.m} · ${esc(fmtFixture(fx))} · ${esc(fx.v||"")}</div>
+        <div style="font-size:.82rem;margin:.25rem 0 .4rem">${esc(j.s)}</div>
+        <div style="display:flex;align-items:center;gap:.4rem;font-size:.76rem;border-top:1px solid var(--border);padding-top:.4rem">🧑‍⚖️ ${refName} ${pill}</div>
+      </div>`;
+    }).join("");
+    return `<div class="surface" style="border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem">
+      <div style="font-weight:800;font-family:'Bricolage Grotesque',sans-serif;margin-bottom:.5rem">Group ${g}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:.7rem">${cards}</div>
+    </div>`;
+  }).join("");
+}
 renderRefs();
 renderDiscipline();
+renderJeopardy();
 if($("discSearch")) $("discSearch").addEventListener("input",e=>{ _discQ=e.target.value.trim().toLowerCase(); drawDiscLog(); });
 __SQ.querySelectorAll("#discFilter .disc-fbtn").forEach(b=>b.addEventListener("click",()=>{
   __SQ.querySelectorAll("#discFilter .disc-fbtn").forEach(x=>x.setAttribute("aria-pressed","false"));
