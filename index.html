@@ -4352,6 +4352,8 @@ html[data-theme="dark"] #area-stats{
 #area-stats .tabbtn{padding:.45rem .85rem;border-radius:9px;border:0;background:none;color:var(--text-2);font-weight:600;cursor:pointer;font-size:.88rem;transition:.15s}
 #area-stats .tabbtn:hover{color:var(--text)}
 #area-stats .tabbtn[aria-selected="true"]{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm);font-weight:700}
+#area-stats .disc-fbtn{padding:.4rem .7rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-weight:600;cursor:pointer;font-size:.82rem}
+#area-stats .disc-fbtn[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
 #area-stats .heatbar{height:14px;border-radius:999px;background:var(--surface-3);overflow:hidden}
 #area-stats .heatfill{height:100%;border-radius:999px;transition:width .3s}
 #area-stats select,
@@ -5812,6 +5814,8 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
     <button class="tabbtn" role="tab" id="tab-scorers" aria-controls="panel-scorers" aria-selected="false" tabindex="-1">Scorers</button>
     <button class="tabbtn" role="tab" id="tab-intel" aria-controls="panel-intel" aria-selected="false" tabindex="-1">Intel</button>
     <button class="tabbtn" role="tab" id="tab-refs" aria-controls="panel-refs" aria-selected="false" tabindex="-1">Referees</button>
+    <button class="tabbtn" role="tab" id="tab-discipline" aria-controls="panel-discipline" aria-selected="false" tabindex="-1">Discipline</button>
+    <button class="tabbtn" role="tab" id="tab-jeopardy" aria-controls="panel-jeopardy" aria-selected="false" tabindex="-1">Jeopardy</button>
     <button class="tabbtn" role="tab" id="tab-tracker" aria-controls="panel-tracker" aria-selected="false" tabindex="-1">Tracker</button>
     <button class="tabbtn" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false" tabindex="-1">Guide</button>
   </div>
@@ -5947,6 +5951,88 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
         <tbody id="refRows"></tbody>
       </table>
     </div>
+  </section>
+
+  <!-- DISCIPLINE -->
+  <section id="panel-discipline" role="tabpanel" aria-labelledby="tab-discipline" hidden>
+    <div class="surface" style="border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <p class="muted" style="margin:0;font-size:.88rem">Player bookings and sending-offs from the FIFA post-match summary reports. Covers all 48 group-stage matches. The referee column is joined from the confirmed match-official appointments.</p>
+    </div>
+    <div id="discKpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.7rem;margin-bottom:1rem"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem">
+      <div class="surface" style="border-radius:12px;overflow:auto">
+        <table>
+          <caption class="visually-hidden">Player bookings leaderboard</caption>
+          <thead><tr>
+            <th scope="col" style="text-align:left;padding:.6rem .7rem">Player</th>
+            <th scope="col" style="text-align:left;padding:.6rem .5rem">Team</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">🟨</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">🟥</th>
+            <th scope="col" style="text-align:right;padding:.6rem .7rem">Total</th>
+          </tr></thead>
+          <tbody id="discPlayerRows"></tbody>
+        </table>
+      </div>
+      <div class="surface" style="border-radius:12px;overflow:auto">
+        <table>
+          <caption class="visually-hidden">Team discipline this tournament</caption>
+          <thead><tr>
+            <th scope="col" style="text-align:left;padding:.6rem .7rem">Team</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">🟨</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">🟥</th>
+            <th scope="col" style="text-align:right;padding:.6rem .7rem">Total</th>
+          </tr></thead>
+          <tbody id="discTeamRows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="surface" style="border-radius:12px;overflow:auto;margin-top:1rem">
+      <table>
+        <caption class="visually-hidden">Referee strictness — cards per match</caption>
+        <thead><tr>
+          <th scope="col" style="text-align:left;padding:.6rem .7rem">Referee</th>
+          <th scope="col" style="text-align:right;padding:.6rem .5rem">Matches</th>
+          <th scope="col" style="text-align:right;padding:.6rem .5rem">🟨</th>
+          <th scope="col" style="text-align:right;padding:.6rem .5rem">🟥</th>
+          <th scope="col" style="text-align:right;padding:.6rem .5rem">Cards</th>
+          <th scope="col" style="text-align:right;padding:.6rem .7rem">Cards / match</th>
+        </tr></thead>
+        <tbody id="discRefRows"></tbody>
+      </table>
+    </div>
+    <div class="surface" style="border-radius:12px;padding:1rem;margin-top:1rem">
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem">
+        <input id="discSearch" placeholder="Filter by player, team or match…" style="flex:1;min-width:180px;padding:.5rem .7rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text)">
+        <div id="discFilter" style="display:flex;gap:.4rem">
+          <button type="button" data-f="all" aria-pressed="true" class="disc-fbtn">All</button>
+          <button type="button" data-f="Yellow" aria-pressed="false" class="disc-fbtn">🟨 Yellow</button>
+          <button type="button" data-f="Red" aria-pressed="false" class="disc-fbtn">🟥 Red</button>
+        </div>
+      </div>
+      <div style="overflow:auto">
+        <table>
+          <caption class="visually-hidden">Full card log</caption>
+          <thead><tr>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">M</th>
+            <th scope="col" style="text-align:right;padding:.6rem .5rem">Min</th>
+            <th scope="col" style="text-align:left;padding:.6rem .7rem">Player</th>
+            <th scope="col" style="text-align:left;padding:.6rem .5rem">Team</th>
+            <th scope="col" style="text-align:center;padding:.6rem .5rem">Card</th>
+            <th scope="col" style="text-align:left;padding:.6rem .7rem">Fixture</th>
+          </tr></thead>
+          <tbody id="discLogRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATCH JEOPARDY -->
+  <section id="panel-jeopardy" role="tabpanel" aria-labelledby="tab-jeopardy" hidden>
+    <div class="surface" style="border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <p class="muted" style="margin:0;font-size:.88rem">What's riding on the final group games (matchday 3, matches 49–72) — read off the standings through MD2 — alongside the appointed referee and their card risk. The two games in a group kick off simultaneously.</p>
+      <div id="jeopardySummary" style="margin-top:.6rem;display:flex;gap:.4rem;flex-wrap:wrap"></div>
+    </div>
+    <div id="jeopardyOut"></div>
   </section>
 
   <!-- TRACKER -->
@@ -6548,6 +6634,84 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
 </section>
 
 <section class="tab-content" id="tab-transfers">
+  <div class="panel" style="border:1px solid var(--amber)">
+    <h2>📋 Your fantasy plan — MD1 review · MD2 · MD3</h2>
+    <p style="color: var(--muted); font-size: 13px; margin-top:0;">Round 1 score: <strong style="color:var(--text)">78 pts</strong> — a strong return. Squad (3-4-3): Kobel; Laporte, Kimmich, Muñoz; Raphinha, Valverde, Bruno&nbsp;(C), Wirtz; Kane, Oyarzabal&nbsp;(VC), Messi. Bench: Crépeau, Coufal, Tagliafico, Mac Allister.</p>
+    <h3>What MD1 taught us</h3>
+    <ul>
+      <li><strong>Captaincy was the one miss.</strong> Armband on Bruno Fernandes returned 6 (3×2); Messi hauled <strong>19</strong> uncaptained. Captaining Messi would have added ~13 pts. The vice (Oyarzabal, 2) was also low-ceiling — set both C and VC to genuine explosive premiums.</li>
+      <li><strong>Points left on the bench:</strong> Mac Allister (8) sat while two starters blanked. Bench order/priority matters.</li>
+      <li><strong>Don't overreact to one-game blanks:</strong> Raphinha (2), Valverde (2), Oyarzabal (2) all scored low but have excellent MD2 fixtures — they are holds, not sells.</li>
+      <li>MD1 hauls: Messi 19, Kane 13, Laporte 9, Muñoz 9, Kimmich 8 — the spine is working.</li>
+    </ul>
+    <h3>MD2 fixtures — your XI (all favourable)</h3>
+    <div style="overflow:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead><tr style="text-align:left;color:var(--muted)">
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Player(s)</th>
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">MD2 fixture</th>
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Difficulty</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:6px 8px">Raphinha</td><td style="padding:6px 8px">Brazil v Haiti</td><td style="padding:6px 8px"><span style="color:#20c997;font-weight:700">Elite ⬤</span></td></tr>
+        <tr><td style="padding:6px 8px">Kane</td><td style="padding:6px 8px">England v Ghana</td><td style="padding:6px 8px"><span style="color:#20c997;font-weight:700">Elite ⬤</span></td></tr>
+        <tr><td style="padding:6px 8px">Laporte, Oyarzabal</td><td style="padding:6px 8px">Spain v Saudi Arabia</td><td style="padding:6px 8px"><span style="color:#20c997;font-weight:700">Elite ⬤</span></td></tr>
+        <tr><td style="padding:6px 8px">Valverde</td><td style="padding:6px 8px">Uruguay v Cabo Verde</td><td style="padding:6px 8px"><span style="color:#88e15a;font-weight:700">Strong</span></td></tr>
+        <tr><td style="padding:6px 8px">Kobel</td><td style="padding:6px 8px">Switzerland v Bosnia</td><td style="padding:6px 8px"><span style="color:#88e15a;font-weight:700">Strong</span></td></tr>
+        <tr><td style="padding:6px 8px">Bruno Fernandes</td><td style="padding:6px 8px">Portugal v Uzbekistan</td><td style="padding:6px 8px"><span style="color:#88e15a;font-weight:700">Strong</span></td></tr>
+        <tr><td style="padding:6px 8px">Muñoz</td><td style="padding:6px 8px">Colombia v Congo DR</td><td style="padding:6px 8px"><span style="color:#88e15a;font-weight:700">Strong</span></td></tr>
+        <tr><td style="padding:6px 8px">Kimmich, Wirtz</td><td style="padding:6px 8px">Germany v Côte d'Ivoire</td><td style="padding:6px 8px"><span style="color:#facc15;font-weight:700">Moderate</span></td></tr>
+        <tr><td style="padding:6px 8px">Messi, Mac Allister</td><td style="padding:6px 8px">Argentina v Austria</td><td style="padding:6px 8px"><span style="color:#facc15;font-weight:700">Moderate</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h3>Transfers — go minimal (roll if unsure)</h3>
+    <ul>
+      <li><strong>No starter has a bad fixture</strong>, so there's no forced move. Banking a free transfer toward the R3 Wildcard is defensible.</li>
+      <li>If you do use one: the only XI spot facing a tougher draw is the <strong>double Germany</strong> (Kimmich + Wirtz v Côte d'Ivoire). Swapping <strong>Wirtz → a Brazil / Spain / England attacker</strong> (Haiti, Saudi, Ghana fixtures) is the highest-upside single move.</li>
+      <li>Check <strong>Tagliafico</strong>: he didn't feature in MD1 (0). If he's not nailed-on for the Argentina XI, a free transfer to a <em>playing</em> defender with MD2 clean-sheet upside (Spain v Saudi, England v Ghana) is sensible — and lifts your bench cover.</li>
+      <li>Keep within the 3-per-nation cap (you already run 3 Argentines and 2 each of Spain/Germany).</li>
+    </ul>
+    <h3>Captaincy &amp; bench (the real points lever)</h3>
+    <ul>
+      <li><strong>Captain: Kane (v Ghana)</strong> — softest of the elite mismatches and a penalty taker. <strong>Vice: Messi</strong> — keeps the in-form explosive option as backup. </li>
+      <li><strong>Differential captain:</strong> Raphinha (v Haiti) if you want to climb mini-leagues; or simply Messi (C) if you trust the MD1 form to continue.</li>
+      <li>Move the armband <strong>off Bruno Fernandes</strong> — good player, lower ceiling than Kane/Messi/Raphinha this round.</li>
+      <li><strong>Bench priority:</strong> Mac Allister #1 (Argentina play, real start chance), then Coufal (Czechia v South Africa) over Tagliafico if his start is in doubt.</li>
+    </ul>
+    <p style="color: var(--muted); font-size: 12px;">Difficulty rated on FIFA-ranking gap from the favourite's view. This is a planning aid — confirm line-ups and fitness before the round 2 deadline.</p>
+
+    <h3>🏁 Round 3 update — your players' qualification scenarios</h3>
+    <p style="color: var(--muted); font-size: 13px; margin-top:0;">All 12 groups decided through MD2. Round 3 splits your squad into <strong style="color:#20c997">must-win sides</strong> (motivated, full strength) and <strong style="color:#facc15">already-qualified group-toppers</strong> (rotation risk).</p>
+    <div style="overflow:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+      <thead><tr style="text-align:left;color:var(--muted)">
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Your player(s)</th>
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">R3 fixture</th>
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Status</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:6px 8px"><strong>Kane</strong></td><td style="padding:6px 8px">England v Panama</td><td style="padding:6px 8px;color:#20c997;font-weight:700">Must seal vs eliminated side — full strength, big mismatch ⬤</td></tr>
+        <tr><td style="padding:6px 8px"><strong>Valverde</strong></td><td style="padding:6px 8px">Uruguay v Spain</td><td style="padding:6px 8px;color:#20c997;font-weight:700">Must win to qualify — full strength</td></tr>
+        <tr><td style="padding:6px 8px"><strong>Raphinha</strong></td><td style="padding:6px 8px">Brazil v Scotland</td><td style="padding:6px 8px;color:#20c997;font-weight:700">Need a point, will play strong</td></tr>
+        <tr><td style="padding:6px 8px"><strong>Kobel</strong> (· Crépeau)</td><td style="padding:6px 8px">Switzerland v Canada</td><td style="padding:6px 8px;color:#88e15a;font-weight:700">Top-spot game — plays</td></tr>
+        <tr><td style="padding:6px 8px"><strong>Laporte, Oyarzabal</strong></td><td style="padding:6px 8px">Spain v Uruguay</td><td style="padding:6px 8px;color:#88e15a;font-weight:700">Near-through but a real game — likely plays</td></tr>
+        <tr><td style="padding:6px 8px"><strong>Muñoz</strong></td><td style="padding:6px 8px">Colombia v Portugal</td><td style="padding:6px 8px;color:#88e15a;font-weight:700">Top-spot decider — likely plays</td></tr>
+        <tr><td style="padding:6px 8px"><strong>Bruno Fernandes</strong></td><td style="padding:6px 8px">Portugal v Colombia</td><td style="padding:6px 8px;color:#88e15a;font-weight:700">Near-through, top-spot game</td></tr>
+        <tr><td style="padding:6px 8px"><strong>Kimmich, Wirtz</strong></td><td style="padding:6px 8px">Germany v Ecuador</td><td style="padding:6px 8px;color:#facc15;font-weight:700">✅ through &amp; top — rotation risk ⚠️</td></tr>
+        <tr><td style="padding:6px 8px"><strong>Messi, Mac Allister, Tagliafico</strong></td><td style="padding:6px 8px">Argentina v Jordan</td><td style="padding:6px 8px;color:#fb7185;font-weight:700">✅ through &amp; top — dead rubber, high rotation risk ⚠️</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h3>Round 3 captaincy &amp; transfers</h3>
+    <ul>
+      <li><strong>Captain Kane</strong> (England v Panama) — eliminated opponent, England must secure top spot; biggest, safest mismatch of your options.</li>
+      <li><strong>Do NOT captain Messi this round</strong> — Argentina are through and top with a dead rubber v Jordan; Scaloni is likely to rest him or cap his minutes. Same caution on Mac Allister/Tagliafico and the Germany pair.</li>
+      <li><strong>Vice-captain:</strong> Raphinha (Brazil v Scotland) or Valverde (Uruguay must win).</li>
+      <li><strong>Transfers / Wildcard:</strong> if this is your Wildcard round, rebuild toward <em>must-win and mismatch</em> sides — England attack v Panama, Brazil v Scotland, Uruguay v Spain, plus clean-sheet picks from sides that need the win. Move <em>off</em> the Argentina/Germany rotation risks for players nailed to start.</li>
+      <li><strong>Bench order:</strong> demote the Argentina assets' priority where you can — a benched Mac Allister/Tagliafico who doesn't start won't auto-sub usefully.</li>
+    </ul>
+
   <div class="panel">
     <h2>Transfer planner</h2>
     <p style="color: var(--muted); font-size: 13px;">Only 2 free transfers between rounds in the group stage. Plan carefully. Log who you want to bring in, who goes out, and the rationale.</p>
@@ -8060,19 +8224,19 @@ const UK_TV = {
   // GROUP STAGE — all 72 matches
   // Group A (our groups)
   1:  { tv:'ITV',     bst:'20:00', note:'Mexico vs S.Africa — Opening Match' },
-  2:  { tv:'ITV',     bst:'04:00', note:'' },  // South Korea vs Play-Off D
-  25: { tv:'BBC',     bst:'19:00', note:'' },  // Play-Off D vs South Korea → corrected per schedule
-  28: { tv:'ITV',     bst:'20:00', note:'' },  // Play-Off A vs Switzerland (Grp B M28)
+  2:  { tv:'ITV',     bst:'03:00', note:'' },  // South Korea vs Play-Off D
+  25: { tv:'BBC',     bst:'17:00', note:'' },  // Play-Off D vs South Korea → corrected per schedule
+  28: { tv:'ITV',     bst:'04:00', note:'' },  // Mexico vs South Korea (Grp A M28)
   53: { tv:'BBC',     bst:'02:00', note:'' },  // South Africa vs South Korea + Mexico vs Play-Off D (same slot)
   54: { tv:'BBC',     bst:'02:00', note:'' },
 
   // Group B
-  3:  { tv:'BBC',     bst:'21:00', note:'' },  // Canada vs Play-Off A
-  8:  { tv:'ITV',     bst:'21:00', note:'' },  // Qatar vs Switzerland
-  26: { tv:'ITV',     bst:'21:00', note:'' },  // Play-Off A vs Switzerland → Canada vs Qatar
-  27: { tv:'BBC',     bst:'00:00', note:'' },
-  51: { tv:'ITV',     bst:'21:00', note:'' },
-  52: { tv:'ITV',     bst:'21:00', note:'' },
+  3:  { tv:'BBC',     bst:'20:00', note:'' },  // Canada vs Play-Off A
+  8:  { tv:'ITV',     bst:'20:00', note:'' },  // Qatar vs Switzerland
+  26: { tv:'ITV',     bst:'20:00', note:'' },  // Play-Off A vs Switzerland → Canada vs Qatar
+  27: { tv:'BBC',     bst:'23:00', note:'' },
+  51: { tv:'ITV',     bst:'20:00', note:'' },
+  52: { tv:'ITV',     bst:'20:00', note:'' },
 
   // Group C
   5:  { tv:'BBC',     bst:'02:00', note:'🏴󠁧󠁢󠁳󠁣󠁴󠁿 Haiti vs Scotland', nation:'scotland' },
@@ -8087,14 +8251,14 @@ const UK_TV = {
   6:  { tv:'ITV',     bst:'05:00', note:'' },  // Australia vs Play-Off C
   31: { tv:'ITV',     bst:'05:00', note:'' },
   32: { tv:'BBC',     bst:'20:00', note:'' },
-  59: { tv:'ITV',     bst:'02:00', note:'' },
-  60: { tv:'ITV',     bst:'02:00', note:'' },
+  59: { tv:'ITV',     bst:'03:00', note:'' },
+  60: { tv:'ITV',     bst:'03:00', note:'' },
 
   // Group E
   9:  { tv:'BBC',     bst:'00:00', note:'' },  // Ivory Coast vs Ecuador
   10: { tv:'ITV',     bst:'18:00', note:'' },  // Germany vs Curaçao
   33: { tv:'ITV',     bst:'21:00', note:'' },  // Germany vs Ivory Coast
-  34: { tv:'BBC',     bst:'00:00', note:'' },
+  34: { tv:'BBC',     bst:'01:00', note:'' },
   55: { tv:'BBC',     bst:'21:00', note:'' },  // Germany vs Ecuador + Curaçao vs Ivory Coast
   56: { tv:'BBC',     bst:'21:00', note:'' },
 
@@ -8102,31 +8266,31 @@ const UK_TV = {
   11: { tv:'ITV',     bst:'21:00', note:'' },  // Netherlands vs Japan
   12: { tv:'ITV',     bst:'03:00', note:'' },  // Play-Off B vs Tunisia
   35: { tv:'BBC',     bst:'18:00', note:'' },  // Netherlands vs Play-Off B
-  36: { tv:'ITV',     bst:'03:00', note:'' },
+  36: { tv:'ITV',     bst:'05:00', note:'' },
   57: { tv:'ITV',     bst:'00:00', note:'' },  // Japan vs Play-Off B + Netherlands vs Tunisia
   58: { tv:'BBC',     bst:'00:00', note:'' },
 
   // Group G
-  15: { tv:'BBC',     bst:'02:00', note:'' },  // IR Iran vs New Zealand
+  15: { tv:'BBC',     bst:'05:00', note:'' },  // IR Iran vs New Zealand
   16: { tv:'BBC',     bst:'20:00', note:'' },  // Belgium vs Egypt
   39: { tv:'ITV',     bst:'20:00', note:'' },  // Belgium vs Iran
   40: { tv:'BBC',     bst:'02:00', note:'' },
-  63: { tv:'ITV',     bst:'02:00', note:'' },
+  63: { tv:'ITV',     bst:'04:00', note:'' },
   64: { tv:'BBC',     bst:'04:00', note:'' },
 
   // Group H
   13: { tv:'ITV',     bst:'23:00', note:'' },  // Saudi Arabia vs Uruguay
-  14: { tv:'ITV',     bst:'17:00', note:'' },  // Spain vs Cape Verde
-  37: { tv:'BBC',     bst:'22:00', note:'' },  // Spain vs Saudi Arabia
+  14: { tv:'ITV',     bst:'18:00', note:'' },  // Spain vs Cape Verde
+  37: { tv:'BBC',     bst:'23:00', note:'' },  // Spain vs Saudi Arabia
   38: { tv:'ITV',     bst:'17:00', note:'' },
-  65: { tv:'ITV',     bst:'23:00', note:'' },  // Cape Verde vs Uruguay + Saudi Arabia vs Spain
-  66: { tv:'ITV',     bst:'00:00', note:'' },
+  65: { tv:'ITV',     bst:'01:00', note:'' },  // Cape Verde vs Uruguay + Saudi Arabia vs Spain
+  66: { tv:'ITV',     bst:'01:00', note:'' },
 
   // Group I
   17: { tv:'BBC',     bst:'20:00', note:'' },  // France vs Senegal
   18: { tv:'BBC',     bst:'23:00', note:'' },  // Play-Off 2 vs Norway
-  41: { tv:'BBC',     bst:'22:00', note:'' },  // France vs Play-Off 2
-  42: { tv:'ITV',     bst:'23:00', note:'' },  // Senegal vs Norway
+  41: { tv:'BBC',     bst:'01:00', note:'' },  // France vs Play-Off 2
+  42: { tv:'ITV',     bst:'22:00', note:'' },  // Senegal vs Norway
   61: { tv:'ITV',     bst:'20:00', note:'' },  // France vs Norway + Senegal vs Play-Off 2
   62: { tv:'ITV',     bst:'20:00', note:'' },
 
@@ -8139,7 +8303,7 @@ const UK_TV = {
   70: { tv:'BBC',     bst:'03:00', note:'' },
 
   // Group K
-  23: { tv:'BBC',     bst:'17:00', note:'' },  // Portugal vs Play-Off 1
+  23: { tv:'BBC',     bst:'18:00', note:'' },  // Portugal vs Play-Off 1
   24: { tv:'BBC',     bst:'03:00', note:'' },  // Uzbekistan vs Colombia
   47: { tv:'ITV',     bst:'18:00', note:'' },  // Portugal vs Uzbekistan
   48: { tv:'ITV',     bst:'03:00', note:'' },  // Colombia vs Play-Off 1
@@ -11937,6 +12101,7 @@ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
 <script src="data/qual_array.js"></script>
 <script src="data/fd_standings.js"></script>
 <script src="data/fd_extra.js"></script>
+<script src="data/discipline.js"></script>
 <!-- 3. Stats Desk — IIFE isolated -->
 <script>
 (function(){
@@ -13179,69 +13344,69 @@ const FIXTURES = {
   "BRA|MAR":{d:"2026-06-13 22:00",v:"New York/NJ",m:7,ref:"Slavko Vinčić (SVN)"},
   "QAT|SUI":{d:"2026-06-13 19:00",v:"San Francisco",m:8,ref:"Said Martínez (HON)"},
   "CIV|ECU":{d:"2026-06-14 23:00",v:"Philadelphia",m:9,ref:"François Letexier (FRA)"},
-  "CUW|GER":{d:"2026-06-14 17:00",v:"Houston",m:10,ref:"Jalal Jiyed (MAR)"},
+  "CUW|GER":{d:"2026-06-14 17:00",v:"Houston",m:10,ref:"Jalal Jayed (MAR)"},
   "JPN|NED":{d:"2026-06-14 20:00",v:"Dallas",m:11,ref:"Ismail Elfath (USA)"},
   "SWE|TUN":{d:"2026-06-15 02:00",v:"Monterrey",m:12,ref:"Yael Falcón Pérez (ARG)"},
   "KSA|URU":{d:"2026-06-15 22:00",v:"Miami",m:13,ref:"Maurizio Mariani (ITA)"},
   "CPV|ESP":{d:"2026-06-15 17:00",v:"Atlanta",m:14,ref:"Adham Makhadmeh (JOR)"},
   "IRN|NZL":{d:"2026-06-16 04:00",v:"Los Angeles",m:15,ref:"César Ramos (MEX)"},
-  "BEL|EGY":{d:"2026-06-15 22:00",v:"Seattle",m:16,ref:"Ramon Abatti (BRA)"},
-  "FRA|SEN":{d:"2026-06-16 19:00",v:"New York/NJ",m:17},
-  "IRQ|NOR":{d:"2026-06-16 22:00",v:"Boston",m:18},
-  "ALG|ARG":{d:"2026-06-17 01:00",v:"Kansas City",m:19},
-  "AUT|JOR":{d:"2026-06-17 04:00",v:"San Francisco",m:20},
-  "GHA|PAN":{d:"2026-06-17 23:00",v:"Toronto",m:21},
-  "CRO|ENG":{d:"2026-06-17 20:00",v:"Dallas",m:22},
-  "COD|POR":{d:"2026-06-17 17:00",v:"Houston",m:23},
-  "COL|UZB":{d:"2026-06-18 02:00",v:"Mexico City",m:24},
-  "CZE|RSA":{d:"2026-06-18 16:00",v:"Atlanta",m:25},
-  "BIH|SUI":{d:"2026-06-18 19:00",v:"Los Angeles",m:26},
-  "CAN|QAT":{d:"2026-06-18 22:00",v:"Vancouver",m:27},
-  "KOR|MEX":{d:"2026-06-19 03:00",v:"Guadalajara",m:28},
-  "BRA|HAI":{d:"2026-06-20 01:00",v:"Philadelphia",m:29},
-  "MAR|SCO":{d:"2026-06-19 22:00",v:"Boston",m:30},
-  "PAR|TUR":{d:"2026-06-20 04:00",v:"San Francisco",m:31},
-  "AUS|USA":{d:"2026-06-19 19:00",v:"Seattle",m:32},
-  "CIV|GER":{d:"2026-06-20 20:00",v:"Toronto",m:33},
-  "CUW|ECU":{d:"2026-06-21 00:00",v:"Kansas City",m:34},
-  "NED|SWE":{d:"2026-06-20 17:00",v:"Houston",m:35},
-  "JPN|TUN":{d:"2026-06-21 04:00",v:"Monterrey",m:36},
-  "CPV|URU":{d:"2026-06-21 22:00",v:"Miami",m:37},
-  "ESP|KSA":{d:"2026-06-21 16:00",v:"Atlanta",m:38},
-  "BEL|IRN":{d:"2026-06-21 19:00",v:"Los Angeles",m:39},
-  "EGY|NZL":{d:"2026-06-22 01:00",v:"Vancouver",m:40},
-  "NOR|SEN":{d:"2026-06-23 00:00",v:"New York/NJ",m:41},
-  "FRA|IRQ":{d:"2026-06-22 21:00",v:"Philadelphia",m:42},
-  "ARG|AUT":{d:"2026-06-22 17:00",v:"Dallas",m:43},
-  "ALG|JOR":{d:"2026-06-23 03:00",v:"San Francisco",m:44},
-  "ENG|GHA":{d:"2026-06-23 20:00",v:"Boston",m:45},
-  "CRO|PAN":{d:"2026-06-23 23:00",v:"Toronto",m:46},
-  "POR|UZB":{d:"2026-06-23 17:00",v:"Houston",m:47},
-  "COD|COL":{d:"2026-06-24 02:00",v:"Guadalajara",m:48},
-  "BRA|SCO":{d:"2026-06-24 22:00",v:"Miami",m:49},
-  "HAI|MAR":{d:"2026-06-24 22:00",v:"Atlanta",m:50},
-  "CAN|SUI":{d:"2026-06-24 19:00",v:"Vancouver",m:51},
-  "BIH|QAT":{d:"2026-06-24 19:00",v:"Seattle",m:52},
-  "CZE|MEX":{d:"2026-06-25 01:00",v:"Mexico City",m:53},
-  "KOR|RSA":{d:"2026-06-25 01:00",v:"Monterrey",m:54},
-  "CIV|CUW":{d:"2026-06-25 20:00",v:"Philadelphia",m:55},
-  "ECU|GER":{d:"2026-06-25 20:00",v:"New York/NJ",m:56},
-  "JPN|SWE":{d:"2026-06-25 23:00",v:"Dallas",m:57},
-  "NED|TUN":{d:"2026-06-25 23:00",v:"Kansas City",m:58},
-  "TUR|USA":{d:"2026-06-26 02:00",v:"Los Angeles",m:59},
-  "AUS|PAR":{d:"2026-06-26 02:00",v:"San Francisco",m:60},
-  "FRA|NOR":{d:"2026-06-26 19:00",v:"Boston",m:61},
-  "IRQ|SEN":{d:"2026-06-26 19:00",v:"Toronto",m:62},
-  "EGY|IRN":{d:"2026-06-27 03:00",v:"Seattle",m:63},
-  "BEL|NZL":{d:"2026-06-27 03:00",v:"Vancouver",m:64},
-  "CPV|KSA":{d:"2026-06-27 00:00",v:"Houston",m:65},
-  "ESP|URU":{d:"2026-06-27 00:00",v:"Guadalajara",m:66},
-  "ENG|PAN":{d:"2026-06-27 21:00",v:"New York/NJ",m:67},
-  "CRO|GHA":{d:"2026-06-27 21:00",v:"Philadelphia",m:68},
-  "ALG|AUT":{d:"2026-06-28 02:00",v:"Kansas City",m:69},
-  "ARG|JOR":{d:"2026-06-28 02:00",v:"Dallas",m:70},
-  "COL|POR":{d:"2026-06-27 23:30",v:"Miami",m:71},
-  "COD|UZB":{d:"2026-06-27 23:30",v:"Atlanta",m:72},
+  "BEL|EGY":{d:"2026-06-15 19:00",v:"Seattle",m:16,ref:"Ramon Abatti (BRA)"},
+  "FRA|SEN":{d:"2026-06-16 19:00",v:"New York/NJ",m:17,ref:"Alireza Faghani (AUS)"},
+  "IRQ|NOR":{d:"2026-06-16 22:00",v:"Boston",m:18,ref:"Pierre Atcho (GAB)"},
+  "ALG|ARG":{d:"2026-06-17 01:00",v:"Kansas City",m:19,ref:"Szymon Marciniak (POL)"},
+  "AUT|JOR":{d:"2026-06-17 04:00",v:"San Francisco",m:20,ref:"Dahane Beida (MTN)"},
+  "GHA|PAN":{d:"2026-06-17 23:00",v:"Toronto",m:21,ref:"Glenn Nyberg (SWE)"},
+  "CRO|ENG":{d:"2026-06-17 20:00",v:"Dallas",m:22,ref:"Clément Turpin (FRA)"},
+  "COD|POR":{d:"2026-06-17 17:00",v:"Houston",m:23,ref:"Abdulrahman Al-Jassim (QAT)"},
+  "COL|UZB":{d:"2026-06-18 02:00",v:"Mexico City",m:24,ref:"Anthony Taylor (ENG)"},
+  "CZE|RSA":{d:"2026-06-18 16:00",v:"Atlanta",m:25,ref:"Tori Penso (USA)"},
+  "BIH|SUI":{d:"2026-06-18 19:00",v:"Los Angeles",m:26,ref:"João Pinheiro (POR)"},
+  "CAN|QAT":{d:"2026-06-18 22:00",v:"Vancouver",m:27,ref:"Cristian Garay (CHI)"},
+  "KOR|MEX":{d:"2026-06-19 03:00",v:"Guadalajara",m:28,ref:"Gustavo Tejera (URU)"},
+  "BRA|HAI":{d:"2026-06-20 01:00",v:"Philadelphia",m:29,ref:"Alejandro Hernández (ESP)"},
+  "MAR|SCO":{d:"2026-06-19 22:00",v:"Boston",m:30,ref:"Ilgiz Tantashev (UZB)"},
+  "PAR|TUR":{d:"2026-06-20 04:00",v:"San Francisco",m:31,ref:"Iván Barton (SLV)"},
+  "AUS|USA":{d:"2026-06-19 19:00",v:"Seattle",m:32,ref:"Felix Zwayer (GER)"},
+  "CIV|GER":{d:"2026-06-20 20:00",v:"Toronto",m:33,ref:"Juan Benítez (PAR)"},
+  "CUW|ECU":{d:"2026-06-21 00:00",v:"Kansas City",m:34,ref:"Ning Ma (CHN)"},
+  "NED|SWE":{d:"2026-06-20 17:00",v:"Houston",m:35,ref:"Michael Oliver (ENG)"},
+  "JPN|TUN":{d:"2026-06-21 04:00",v:"Monterrey",m:36,ref:"István Kovács (ROU)"},
+  "CPV|URU":{d:"2026-06-21 22:00",v:"Miami",m:37,ref:"Espen Eskås (NOR)"},
+  "ESP|KSA":{d:"2026-06-21 16:00",v:"Atlanta",m:38,ref:"Raphael Claus (BRA)"},
+  "BEL|IRN":{d:"2026-06-21 19:00",v:"Los Angeles",m:39,ref:"Darío Herrera (ARG)"},
+  "EGY|NZL":{d:"2026-06-22 01:00",v:"Vancouver",m:40,ref:"Omar Al-Ali (UAE)"},
+  "NOR|SEN":{d:"2026-06-23 00:00",v:"New York/NJ",m:41,ref:"Wilton Sampaio (BRA)"},
+  "FRA|IRQ":{d:"2026-06-22 21:00",v:"Philadelphia",m:42,ref:"Drew Fischer (CAN)"},
+  "ARG|AUT":{d:"2026-06-22 17:00",v:"Dallas",m:43,ref:"Amin Mohamed (EGY)"},
+  "ALG|JOR":{d:"2026-06-23 03:00",v:"San Francisco",m:44,ref:"Slavko Vinčić (SVN)"},
+  "ENG|GHA":{d:"2026-06-23 20:00",v:"Boston",m:45,ref:"Said Martínez (HON)"},
+  "CRO|PAN":{d:"2026-06-23 23:00",v:"Toronto",m:46,ref:"Pierre Atcho (GAB)"},
+  "POR|UZB":{d:"2026-06-23 17:00",v:"Houston",m:47,ref:"Jalal Jayed (MAR)"},
+  "COD|COL":{d:"2026-06-24 02:00",v:"Guadalajara",m:48,ref:"Maurizio Mariani (ITA)"},
+  "BRA|SCO":{d:"2026-06-24 22:00",v:"Miami",m:49,ref:"César Ramos (MEX)"},
+  "HAI|MAR":{d:"2026-06-24 22:00",v:"Atlanta",m:50,ref:"Danny Makkelie (NED)"},
+  "CAN|SUI":{d:"2026-06-24 19:00",v:"Vancouver",m:51,ref:"Ramon Abatti (BRA)"},
+  "BIH|QAT":{d:"2026-06-24 19:00",v:"Seattle",m:52,ref:"Jesús Valenzuela (VEN)"},
+  "CZE|MEX":{d:"2026-06-25 01:00",v:"Mexico City",m:53,ref:"Yael Falcón Pérez (ARG)"},
+  "KOR|RSA":{d:"2026-06-25 01:00",v:"Monterrey",m:54,ref:"Facundo Tello (ARG)"},
+  "CIV|CUW":{d:"2026-06-25 20:00",v:"Philadelphia",m:55,ref:"Glenn Nyberg (SWE)"},
+  "ECU|GER":{d:"2026-06-25 20:00",v:"New York/NJ",m:56,ref:"Tori Penso (USA)"},
+  "JPN|SWE":{d:"2026-06-25 23:00",v:"Dallas",m:57,ref:"Iván Barton (SLV)"},
+  "NED|TUN":{d:"2026-06-25 23:00",v:"Kansas City",m:58,ref:"Katia García (MEX)"},
+  "TUR|USA":{d:"2026-06-26 02:00",v:"Los Angeles",m:59,ref:"Mustapha Ghorbal (ALG)"},
+  "AUS|PAR":{d:"2026-06-26 02:00",v:"San Francisco",m:60,ref:"Clément Turpin (FRA)"},
+  "FRA|NOR":{d:"2026-06-26 19:00",v:"Boston",m:61,ref:"Michael Oliver (ENG)"},
+  "IRQ|SEN":{d:"2026-06-26 19:00",v:"Toronto",m:62,ref:"Anthony Taylor (ENG)"},
+  "EGY|IRN":{d:"2026-06-27 03:00",v:"Seattle",m:63,ref:"Szymon Marciniak (POL)"},
+  "BEL|NZL":{d:"2026-06-27 03:00",v:"Vancouver",m:64,ref:"Adham Makhadmeh (JOR)"},
+  "CPV|KSA":{d:"2026-06-27 00:00",v:"Houston",m:65,ref:"François Letexier (FRA)"},
+  "ESP|URU":{d:"2026-06-27 00:00",v:"Guadalajara",m:66,ref:"Ismail Elfath (USA)"},
+  "ENG|PAN":{d:"2026-06-27 21:00",v:"New York/NJ",m:67,ref:"Abdulrahman Al-Jassim (QAT)"},
+  "CRO|GHA":{d:"2026-06-27 21:00",v:"Philadelphia",m:68,ref:"Drew Fischer (CAN)"},
+  "ALG|AUT":{d:"2026-06-28 02:00",v:"Kansas City",m:69,ref:"Ilgiz Tantashev (UZB)"},
+  "ARG|JOR":{d:"2026-06-28 02:00",v:"Dallas",m:70,ref:"István Kovács (ROU)"},
+  "COL|POR":{d:"2026-06-27 23:30",v:"Miami",m:71,ref:"Alireza Faghani (AUS)"},
+  "COD|UZB":{d:"2026-06-27 23:30",v:"Atlanta",m:72,ref:"Felix Zwayer (GER)"},
 };
 
 // Auto-generated by build_qual_data.py from ScoutingStats Team
@@ -14335,6 +14500,30 @@ const REFS = [
   {n:"François Letexier", c:"France", ypg:4.07, sample:"", note:"4.07 yellows/game average (matchday graphic). WC2026: Côte d'Ivoire v Ecuador (replacing the injured Oliver)."},
   {n:"Mustapha Ghorbal", c:"Algeria", ypg:3.9, sample:"", note:"3.87 yellows/game. WC2026: Haiti v Scotland."},
   {n:"Adham Makhadmeh", c:"Jordan", ypg:3.2, sample:"", note:"3.2 career (4.8 this season). WC2026: Cape Verde v Spain."},
+  {n:"Darío Herrera", c:"Argentina", ypg:6.0, sample:"", note:"Card-heavy CONMEBOL whistle — among the highest booking rates at the tournament. WC2026: Belgium v IR Iran."},
+  {n:"István Kovács", c:"Romania", ypg:4.9, sample:"", note:"~4.9 yellows/game estimate; strict UEFA elite. WC2026: Tunisia v Japan."},
+  {n:"Alejandro Hernández", c:"Spain", ypg:5.2, sample:"", note:"~5.2 yellows/game estimate; card-heavy La Liga whistle. WC2026: Brazil v Haiti."},
+  {n:"Gustavo Tejera", c:"Uruguay", ypg:4.9, sample:"", note:"~4.9 yellows/game estimate, strict CONMEBOL. WC2026: Mexico v South Korea."},
+  {n:"Cristian Garay", c:"Chile", ypg:4.8, sample:"", note:"~4.8 yellows/game estimate; sent off two in Canada 6-0 Qatar. WC2026: Canada v Qatar."},
+  {n:"Raphael Claus", c:"Brazil", ypg:4.6, sample:"", note:"~4.6 yellows/game estimate, CONMEBOL. WC2026: Spain v Saudi Arabia."},
+  {n:"Juan Benítez", c:"Paraguay", ypg:4.6, sample:"", note:"~4.6 yellows/game estimate, CONMEBOL. WC2026: Germany v Côte d'Ivoire."},
+  {n:"João Pinheiro", c:"Portugal", ypg:4.6, sample:"", note:"~4.6 yellows/game estimate; card-heavy Liga Portugal. WC2026: Switzerland v Bosnia."},
+  {n:"Iván Barton", c:"El Salvador", ypg:4.3, sample:"", note:"~4.3 yellows/game estimate, CONCACAF. WC2026: Türkiye v Paraguay."},
+  {n:"Amin Mohamed", c:"Egypt", ypg:4.2, sample:"small", note:"Estimate; limited public per-game data (CAF). WC2026: Argentina v Austria."},
+  {n:"Pierre Atcho", c:"Gabon", ypg:4.2, sample:"small", note:"Estimate; limited public per-game data (CAF). WC2026: Iraq v Norway, Panama v Croatia."},
+  {n:"Omar Al-Ali", c:"United Arab Emirates", ypg:4.1, sample:"small", note:"Estimate; limited public per-game data (AFC). WC2026: New Zealand v Egypt."},
+  {n:"Clément Turpin", c:"France", ypg:4.0, sample:"", note:"~4.0 yellows/game, experienced UEFA elite. WC2026: England v Croatia."},
+  {n:"Ning Ma", c:"China PR", ypg:4.0, sample:"small", note:"Estimate; limited public per-game data (AFC). WC2026: Ecuador v Curaçao."},
+  {n:"Dahane Beida", c:"Mauritania", ypg:4.0, sample:"small", note:"Estimate; limited public per-game data (CAF). WC2026: Austria v Jordan."},
+  {n:"Jalal Jayed", c:"Morocco", ypg:4.0, sample:"small", note:"Estimate; limited public per-game data (CAF). WC2026: Germany v Curaçao, Portugal v Uzbekistan."},
+  {n:"Espen Eskås", c:"Norway", ypg:3.9, sample:"", note:"~3.9 yellows/game estimate, UEFA. WC2026: Uruguay v Cabo Verde."},
+  {n:"Drew Fischer", c:"Canada", ypg:3.9, sample:"small", note:"Estimate; CONCACAF/MLS. WC2026: France v Iraq."},
+  {n:"Glenn Nyberg", c:"Sweden", ypg:3.8, sample:"", note:"~3.8 yellows/game estimate, UEFA. WC2026: Ghana v Panama."},
+  {n:"Ilgiz Tantashev", c:"Uzbekistan", ypg:3.8, sample:"small", note:"Estimate; limited public per-game data (AFC). WC2026: Scotland v Morocco."},
+  {n:"Anthony Taylor", c:"England", ypg:3.8, sample:"", note:"~3.8 yellows/game, experienced PGMOL. WC2026: Colombia v Uzbekistan."},
+  {n:"Abdulrahman Al-Jassim", c:"Qatar", ypg:3.6, sample:"small", note:"Estimate; 2022 World Cup final referee (AFC). WC2026: Portugal v Congo DR."},
+  {n:"Tori Penso", c:"USA", ypg:3.6, sample:"", note:"~3.6 yellows/game estimate, MLS. WC2026: Czechia v South Africa."},
+  {n:"Katia García", c:"Mexico", ypg:4.0, sample:"small", note:"Estimate; limited public per-game data (CONCACAF). WC2026: Tunisia v Netherlands."},
 ];
 
 const MAX_CA = 3.1, MAX_FM = 15.4;
@@ -14914,6 +15103,74 @@ function renderRefs(){
   });
 }
 
+// ---- discipline (player bookings from post-match reports, matches 1-24) ----
+const DISC_FLAG={"Mexico":"mx","South Africa":"za","Korea Republic":"kr","Czechia":"cz","Canada":"ca","Bosnia and Herzegovina":"ba","USA":"us","Paraguay":"py","Haiti":"ht","Scotland":"gb-sct","Australia":"au","Türkiye":"tr","Brazil":"br","Morocco":"ma","Qatar":"qa","Switzerland":"ch","Côte d'Ivoire":"ci","Ecuador":"ec","Germany":"de","Curaçao":"cw","Netherlands":"nl","Japan":"jp","Sweden":"se","Tunisia":"tn","Saudi Arabia":"sa","Uruguay":"uy","Spain":"es","Cabo Verde":"cv","IR Iran":"ir","New Zealand":"nz","Belgium":"be","Egypt":"eg","France":"fr","Senegal":"sn","Iraq":"iq","Norway":"no","Argentina":"ar","Algeria":"dz","Austria":"at","Jordan":"jo","Ghana":"gh","Panama":"pa","England":"gb-eng","Croatia":"hr","Portugal":"pt","Congo DR":"cd","Uzbekistan":"uz","Colombia":"co"};
+function discFlag(name){ const iso=DISC_FLAG[name]; return iso?`<img class="crest" src="https://flagcdn.com/w40/${iso}.png" width="22" height="16" alt="" loading="lazy" style="vertical-align:-3px;margin-right:.4rem" onerror="this.style.display='none'">`:''; }
+let _discFilt="all", _discQ="";
+function renderDiscipline(){
+  const D=window.WC_DISCIPLINE; if(!D||!$("discKpis")) return;
+  const cards=D.cards, matches=D.matches;
+  // referee per match, joined from the FIXTURES appointment overlay
+  const refByNo={}; Object.values(FIXTURES).forEach(fx=>{ if(fx&&fx.ref&&fx.m!=null) refByNo[fx.m]=fx.ref; });
+  // KPIs
+  const tot=cards.length, y=cards.filter(c=>c.card==="Yellow").length, r=tot-y;
+  const played=matches.length, withCards=new Set(cards.map(c=>c.m)).size;
+  const kpis=[["Total cards",tot,""],["Yellow",y,"warn"],["Red",r,"danger"],["Matches",played,""],["Cards / match",(tot/played).toFixed(2),""],["0-card games",played-withCards,""]];
+  $("discKpis").innerHTML=kpis.map(k=>`<div class="surface" style="border-radius:12px;padding:.7rem .9rem"><div class="num" style="font-size:1.6rem;font-weight:800;line-height:1;color:${k[2]==='warn'?'var(--warn)':k[2]==='danger'?'var(--danger)':'var(--text)'}">${k[1]}</div><div class="muted" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;margin-top:.3rem">${k[0]}</div></div>`).join("");
+  // player leaderboard
+  const pmap={};
+  cards.forEach(c=>{ const id=c.player+"|"+c.team; (pmap[id]||(pmap[id]={player:c.player,team:c.team,y:0,r:0,t:0})); if(c.card==="Yellow")pmap[id].y++; else pmap[id].r++; pmap[id].t++; });
+  const players=Object.values(pmap).sort((a,b)=>b.t-a.t||b.r-a.r||a.player.localeCompare(b.player));
+  $("discPlayerRows").innerHTML=players.map(p=>
+    `<tr><td style="padding:.5rem .7rem">${esc(p.player)}</td><td class="muted" style="white-space:nowrap">${discFlag(p.team)}${esc(p.team)}</td>`+
+    `<td style="text-align:right" class="num">${p.y||'–'}</td>`+
+    `<td style="text-align:right;color:var(--danger)" class="num">${p.r||'–'}</td>`+
+    `<td style="text-align:right" class="num"><strong>${p.t}</strong></td></tr>`).join("");
+  // team discipline — actual tournament counts
+  const tmap={};
+  cards.forEach(c=>{ (tmap[c.team]||(tmap[c.team]={team:c.team,y:0,r:0,t:0})); if(c.card==="Yellow")tmap[c.team].y++; else tmap[c.team].r++; tmap[c.team].t++; });
+  const teams=Object.values(tmap).sort((a,b)=>b.t-a.t||b.r-a.r||a.team.localeCompare(b.team));
+  $("discTeamRows").innerHTML=teams.map(t=>
+    `<tr><td style="padding:.5rem .7rem;white-space:nowrap">${discFlag(t.team)}${esc(t.team)}</td>`+
+    `<td style="text-align:right" class="num">${t.y||'–'}</td>`+
+    `<td style="text-align:right;color:var(--danger)" class="num">${t.r||'–'}</td>`+
+    `<td style="text-align:right" class="num"><strong>${t.t}</strong></td></tr>`).join("");
+  // referee strictness — cards per match for each appointed official
+  const rmap={};
+  matches.forEach(m=>{
+    const ref=refByNo[m.m]; if(!ref) return;
+    (rmap[ref]||(rmap[ref]={ref,games:0,y:0,r:0,t:0}));
+    rmap[ref].games++;
+    cards.filter(c=>c.m===m.m).forEach(c=>{ if(c.card==="Yellow")rmap[ref].y++; else rmap[ref].r++; rmap[ref].t++; });
+  });
+  const refs=Object.values(rmap).sort((a,b)=>(b.t/b.games)-(a.t/a.games)||b.t-a.t||a.ref.localeCompare(b.ref));
+  const refTb=$("discRefRows");
+  refTb.innerHTML=refs.length?refs.map(r=>
+    `<tr><td style="padding:.5rem .7rem">${esc(r.ref)}</td>`+
+    `<td style="text-align:right" class="num">${r.games}</td>`+
+    `<td style="text-align:right" class="num">${r.y||'–'}</td>`+
+    `<td style="text-align:right;color:var(--danger)" class="num">${r.r||'–'}</td>`+
+    `<td style="text-align:right" class="num">${r.t}</td>`+
+    `<td style="text-align:right" class="num"><strong>${(r.t/r.games).toFixed(2)}</strong></td></tr>`).join("")
+    :`<tr><td colspan="6" class="muted" style="padding:.7rem">No referee appointments matched these matches yet.</td></tr>`;
+  drawDiscLog();
+}
+function drawDiscLog(){
+  const D=window.WC_DISCIPLINE; if(!D||!$("discLogRows")) return;
+  const mByNo={}; D.matches.forEach(m=>mByNo[m.m]=m);
+  const rows=D.cards.slice().sort((a,b)=>a.m-b.m||(a.min||0)-(b.min||0)).filter(c=>{
+    if(_discFilt!=="all"&&c.card!==_discFilt) return false;
+    if(_discQ){ const m=mByNo[c.m], fx=m?m.home+" "+m.away:""; if(!(c.player+" "+c.team+" "+fx+" m"+c.m).toLowerCase().includes(_discQ)) return false; }
+    return true;
+  });
+  $("discLogRows").innerHTML=rows.map(c=>{
+    const m=mByNo[c.m], fx=m?`${esc(m.home)} ${m.score} ${esc(m.away)}`:"";
+    return `<tr><td style="text-align:right" class="num">${c.m}</td><td style="text-align:right" class="num">${c.min?c.min+"'":''}</td>`+
+      `<td style="padding:.5rem .7rem">${esc(c.player)}</td><td class="muted" style="white-space:nowrap">${discFlag(c.team)}${esc(c.team)}</td>`+
+      `<td style="text-align:center">${c.card==="Yellow"?'🟨':'🟥'}</td><td class="muted">${fx}</td></tr>`;
+  }).join("");
+}
+
 // ---- tabs ----
 const tabs=[...__SQ.querySelectorAll('[role=tab]')];
 function selectTab(tab){
@@ -15276,7 +15533,118 @@ fillMatchupSelects();
 fillGoalSelects();
 renderScorers();
 fillIntelSelect();
+// ---- match jeopardy: what's riding on the final group games (MD3) ----
+const J_NAME={MEX:"Mexico",RSA:"South Africa",KOR:"Korea Republic",CZE:"Czechia",CAN:"Canada",SUI:"Switzerland",BIH:"Bosnia & H.",QAT:"Qatar",BRA:"Brazil",SCO:"Scotland",HAI:"Haiti",MAR:"Morocco",USA:"USA",TUR:"Türkiye",PAR:"Paraguay",AUS:"Australia",CIV:"Côte d'Ivoire",CUW:"Curaçao",ECU:"Ecuador",GER:"Germany",JPN:"Japan",SWE:"Sweden",NED:"Netherlands",TUN:"Tunisia",EGY:"Egypt",IRN:"IR Iran",BEL:"Belgium",NZL:"New Zealand",CPV:"Cabo Verde",KSA:"Saudi Arabia",ESP:"Spain",URU:"Uruguay",FRA:"France",NOR:"Norway",IRQ:"Iraq",SEN:"Senegal",ALG:"Algeria",AUT:"Austria",ARG:"Argentina",JOR:"Jordan",COL:"Colombia",POR:"Portugal",COD:"Congo DR",UZB:"Uzbekistan",GHA:"Ghana",PAN:"Panama",ENG:"England",CRO:"Croatia"};
+const J_TIER={ko:{l:"Knockout",c:"var(--danger)",r:0},decider:{l:"Decider",c:"var(--warn)",r:1},survival:{l:"Survival",c:"#fb7185",r:2},longshot:{l:"Longshot",c:"var(--text-2)",r:3},topspot:{l:"Top spot",c:"var(--accent)",r:4},qualify:{l:"Qualify",c:"var(--good)",r:5},dead:{l:"Dead rubber",c:"var(--text-3)",r:6}};
+const JEOPARDY=[
+  {m:49,g:"C",t:"ko",s:"Win-or-bust for Scotland; Brazil need a point. The tightest group — Brazil, Morocco and Scotland all chasing two spots."},
+  {m:50,g:"C",t:"qualify",s:"Morocco win = through, likely top; Haiti already eliminated."},
+  {m:51,g:"B",t:"topspot",s:"Top spot — both all but through (Canada +6, Switzerland +3)."},
+  {m:52,g:"B",t:"survival",s:"Survival — both on 1 pt; the winner keeps a slim 3rd-place hope, loser is out."},
+  {m:53,g:"A",t:"longshot",s:"Czechia's last chance — must beat Mexico (already through and top) and hope."},
+  {m:54,g:"A",t:"decider",s:"Decides 2nd behind Mexico — South Africa must win, Korea Republic need only a draw."},
+  {m:55,g:"E",t:"decider",s:"Côte d'Ivoire avoid defeat and they're 2nd; Curaçao's last chance (GD −6)."},
+  {m:56,g:"E",t:"longshot",s:"Germany through and top; Ecuador must win to gatecrash 2nd."},
+  {m:57,g:"F",t:"ko",s:"Sweden must win to qualify; Japan need only a draw."},
+  {m:58,g:"F",t:"topspot",s:"Top spot — Netherlands big favourites; Tunisia eliminated."},
+  {m:59,g:"D",t:"dead",s:"Dead rubber — USA top and through, Türkiye out (USA may rotate)."},
+  {m:60,g:"D",t:"ko",s:"Straight knockout for 2nd — winner advances, loser out (both level on 3)."},
+  {m:61,g:"I",t:"topspot",s:"Both already through — top spot and R32 seeding only."},
+  {m:62,g:"I",t:"dead",s:"Dead rubber — both eliminated."},
+  {m:63,g:"G",t:"decider",s:"Decides top spot and Iran's fate — Egypt need a point, Iran likely must win."},
+  {m:64,g:"G",t:"ko",s:"Belgium MUST win or they're OUT; New Zealand need a win to survive."},
+  {m:65,g:"H",t:"decider",s:"Cabo Verde win = qualify ahead of Uruguay; Saudi Arabia's last chance."},
+  {m:66,g:"H",t:"ko",s:"Spain near-through and top; Uruguay must avoid a slip or risk going out."},
+  {m:67,g:"L",t:"qualify",s:"England seal top spot against an eliminated Panama."},
+  {m:68,g:"L",t:"ko",s:"Croatia MUST win or risk going out; Ghana go through with a draw."},
+  {m:69,g:"J",t:"ko",s:"Head-to-head for 2nd — Austria lead on GD, Algeria must win."},
+  {m:70,g:"J",t:"dead",s:"Dead rubber — Argentina top and through, Jordan out (Argentina may rotate)."},
+  {m:71,g:"K",t:"topspot",s:"Top spot — both through (Colombia 6, Portugal 4)."},
+  {m:72,g:"K",t:"survival",s:"Congo DR's slim 3rd-place hope; Uzbekistan eliminated."}
+];
+const J_ORD=["","1st","2nd","3rd","4th"];
+const SCEN_PTS={MEX:6,KOR:3,CZE:1,RSA:1,CAN:4,SUI:4,BIH:1,QAT:1,BRA:4,MAR:4,SCO:3,HAI:0,USA:6,AUS:3,PAR:3,TUR:0,GER:6,CIV:3,ECU:1,CUW:1,NED:4,JPN:4,SWE:3,TUN:0,EGY:4,IRN:2,BEL:2,NZL:1,ESP:4,URU:2,CPV:2,KSA:1,FRA:6,NOR:6,SEN:0,IRQ:0,ARG:6,AUT:3,ALG:3,JOR:0,COL:6,POR:4,COD:1,UZB:0,ENG:4,GHA:4,CRO:3,PAN:0};
+const SCEN_GAMES={A:[["CZE","MEX"],["RSA","KOR"]],B:[["CAN","SUI"],["BIH","QAT"]],C:[["BRA","SCO"],["HAI","MAR"]],D:[["TUR","USA"],["AUS","PAR"]],E:[["CIV","CUW"],["ECU","GER"]],F:[["JPN","SWE"],["NED","TUN"]],G:[["EGY","IRN"],["BEL","NZL"]],H:[["CPV","KSA"],["ESP","URU"]],I:[["FRA","NOR"],["IRQ","SEN"]],J:[["ALG","AUT"],["ARG","JOR"]],K:[["COL","POR"],["COD","UZB"]],L:[["ENG","PAN"],["CRO","GHA"]]};
+function scenTiers(g,r1,r2){
+  const games=SCEN_GAMES[g], codes=games.flat(), pts={};
+  codes.forEach(c=>pts[c]=SCEN_PTS[c]);
+  [[games[0],r1],[games[1],r2]].forEach(function(pair){ const gm=pair[0], r=pair[1], a=gm[0], b=gm[1]; if(r===0)pts[a]+=3; else if(r===2)pts[b]+=3; else {pts[a]+=1;pts[b]+=1;} });
+  const ranked=codes.slice().sort((x,y)=>pts[y]-pts[x]);
+  const tiers=[]; let i=0;
+  while(i<ranked.length){ let j=i; while(j+1<ranked.length && pts[ranked[j+1]]===pts[ranked[i]]) j++; tiers.push({teams:ranked.slice(i,j+1),pts:pts[ranked[i]],from:i+1,to:j+1}); i=j+1; }
+  return tiers;
+}
+function scenOutHtml(g,r1,r2){
+  return scenTiers(g,r1,r2).map(function(t){
+    const col = t.to<=2?'var(--good)':(t.from>=4?'var(--text-3)':'var(--warn)');
+    const pos = t.from===t.to?J_ORD[t.from]:J_ORD[t.from]+'–'+J_ORD[t.to];
+    const teams=t.teams.map(c=>`${jCrest(c)}${esc(J_NAME[c]||c)}`).join('  ');
+    const tie=t.teams.length>1?` <span class="faint" style="font-size:.68rem">⚖️ level on ${t.pts} — GD/goals decide</span>`:'';
+    return `<div style="padding:.18rem 0;font-size:.82rem"><span style="display:inline-block;min-width:46px;font-weight:800;color:${col}">${pos}</span>${teams} <span class="faint">(${t.pts} pts)</span>${tie}</div>`;
+  }).join("")+`<div class="faint" style="font-size:.66rem;margin-top:.3rem">Top 2 qualify (green); 3rd may still go through as a best-third. Ties resolved on goal difference then goals scored.</div>`;
+}
+function scenUI(g){
+  const games=SCEN_GAMES[g];
+  const opt=function(gm){ const a=gm[0],b=gm[1]; return [[0,(J_NAME[a]||a)+" win"],[1,"Draw"],[2,(J_NAME[b]||b)+" win"]].map(o=>`<option value="${o[0]}"${o[0]===1?' selected':''}>${esc(o[1])}</option>`).join(""); };
+  const sel=function(k){ return `<select class="scen-sel" data-g="${g}" data-game="${k}" style="background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.3rem .5rem;font-size:.78rem">${opt(games[k])}</select>`; };
+  return `<div style="margin-top:.7rem;border-top:1px dashed var(--border);padding-top:.6rem">
+    <div class="faint" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem">What-if — pick the final results</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">${sel(0)}${sel(1)}</div>
+    <div class="scen-out" id="scenOut-${g}" style="margin-top:.5rem"></div>
+  </div>`;
+}
+function updateScen(g){
+  const s0=__SQ.querySelector(`#jeopardyOut .scen-sel[data-g="${g}"][data-game="0"]`);
+  const s1=__SQ.querySelector(`#jeopardyOut .scen-sel[data-g="${g}"][data-game="1"]`);
+  const o=document.getElementById("scenOut-"+g);
+  if(s0&&s1&&o) o.innerHTML=scenOutHtml(g,+s0.value,+s1.value);
+}
+function jCrest(code){ const iso=FLAG[code]; return iso?`<img class="crest" src="https://flagcdn.com/w40/${iso}.png" width="20" height="15" alt="" loading="lazy" style="vertical-align:-2px;margin-right:.3rem" onerror="this.style.display='none'">`:''; }
+function jBadge(t){ const m=J_TIER[t]||J_TIER.dead; return `<span style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:${m.c};background:color-mix(in srgb,${m.c} 16%,transparent);padding:.18rem .45rem;border-radius:6px;white-space:nowrap">${m.l}</span>`; }
+function renderJeopardy(){
+  const out=$("jeopardyOut"); if(!out) return;
+  const byNum={}; Object.entries(FIXTURES).forEach(([k,fx])=>{ if(fx&&fx.m!=null) byNum[fx.m]={codes:k.split("|"),fx}; });
+  const counts={}; JEOPARDY.forEach(j=>counts[j.t]=(counts[j.t]||0)+1);
+  const sumEl=$("jeopardySummary");
+  if(sumEl) sumEl.innerHTML=["ko","decider","survival","topspot","qualify","longshot","dead"].filter(t=>counts[t]).map(t=>`<span style="display:inline-flex;align-items:center;gap:.3rem">${jBadge(t)}<span class="faint" style="font-size:.74rem">${counts[t]}</span></span>`).join("");
+  const groups=[...new Set(JEOPARDY.map(j=>j.g))].sort();
+  out.innerHTML=groups.map(g=>{
+    const games=JEOPARDY.filter(j=>j.g===g).sort((a,b)=>J_TIER[a.t].r-J_TIER[b.t].r);
+    const cards=games.map(j=>{
+      const e=byNum[j.m]; if(!e) return "";
+      const [a,b]=e.codes, fx=e.fx, tier=J_TIER[j.t]||J_TIER.dead;
+      const teams=`${jCrest(a)}${esc(J_NAME[a]||a)} <span class="faint">v</span> ${jCrest(b)}${esc(J_NAME[b]||b)}`;
+      const rf=refForFixture(fx), ypg=rf?rf.ypg:null;
+      const refName=fx.ref?esc(fx.ref):"TBC";
+      const pill = ypg!=null
+        ? `<span style="font-weight:700;color:${refRiskHex(ypg)}">🟨 ${ypg.toFixed(1)}</span><span class="faint" style="font-size:.68rem">/g</span>`
+        : `<span class="faint" style="font-size:.7rem">no rating</span>`;
+      return `<div style="background:var(--surface-2);border-radius:10px;padding:.6rem .75rem;border-left:3px solid ${tier.c}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
+          <span style="font-weight:700;line-height:1.3">${teams}</span>${jBadge(j.t)}
+        </div>
+        <div class="faint" style="font-size:.72rem;margin:.3rem 0">M${j.m} · ${esc(fmtFixture(fx))} · ${esc(fx.v||"")}</div>
+        <div style="font-size:.82rem;margin:.25rem 0 .4rem">${esc(j.s)}</div>
+        <div style="display:flex;align-items:center;gap:.4rem;font-size:.76rem;border-top:1px solid var(--border);padding-top:.4rem">🧑‍⚖️ ${refName} ${pill}</div>
+      </div>`;
+    }).join("");
+    return `<div class="surface" style="border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem">
+      <div style="font-weight:800;font-family:'Bricolage Grotesque',sans-serif;margin-bottom:.5rem">Group ${g}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:.7rem">${cards}</div>
+      ${scenUI(g)}
+    </div>`;
+  }).join("");
+  __SQ.querySelectorAll('#jeopardyOut .scen-sel').forEach(function(sl){ sl.addEventListener('change',function(){ updateScen(sl.dataset.g); }); });
+  groups.forEach(updateScen);
+}
 renderRefs();
+renderDiscipline();
+renderJeopardy();
+if($("discSearch")) $("discSearch").addEventListener("input",e=>{ _discQ=e.target.value.trim().toLowerCase(); drawDiscLog(); });
+__SQ.querySelectorAll("#discFilter .disc-fbtn").forEach(b=>b.addEventListener("click",()=>{
+  __SQ.querySelectorAll("#discFilter .disc-fbtn").forEach(x=>x.setAttribute("aria-pressed","false"));
+  b.setAttribute("aria-pressed","true"); _discFilt=b.dataset.f; drawDiscLog();
+}));
 renderStandings();
 renderKnockout();
 renderTracker();
@@ -16433,10 +16801,58 @@ function renderFixture(fx) {
   `;
 }
 
+const MD3_STAKES_HTML = `
+  <div class="panel" style="border:1px solid var(--amber)">
+    <h2>🏁 Matchday 3 — what's at stake</h2>
+    <p style="color: var(--muted); font-size: 13px; margin-top:0;">Final group round, read off results through MD2. Qualify: <strong style="color:var(--text)">top 2 of each group + the 8 best 3rd-placed teams</strong>, so 3rd place is still live. The two games in a group kick off simultaneously.</p>
+    <h3>Headline games (most riding on the result)</h3>
+    <ol style="margin:0 0 4px 18px;padding:0;font-size:13.5px;line-height:1.7">
+      <li><strong>🏴󠁧󠁢󠁳󠁣󠁴󠁿 Brazil v Scotland (Grp C)</strong> — Scotland win-and-through; Brazil/Morocco/Scotland chase two spots.</li>
+      <li><strong>Belgium v New Zealand (Grp G)</strong> — must-win for Belgium or they're out.</li>
+      <li><strong>Australia v Paraguay (Grp D)</strong> — level on points, straight knockout for 2nd.</li>
+      <li><strong>Japan v Sweden (Grp F)</strong> — Sweden must win; Japan defending a top-2 place.</li>
+      <li><strong>Algeria v Austria (Grp J)</strong> — head-to-head for 2nd (Austria ahead on GD).</li>
+      <li><strong>Croatia v Ghana (Grp L)</strong> — Croatia must win or risk going out; Ghana need only a draw.</li>
+      <li><strong>Egypt v Iran (G)</strong>, <strong>Cabo Verde v Saudi / Spain v Uruguay (H)</strong>, <strong>Korea v South Africa (A)</strong> — qualification deciders, with Uruguay among the big names sweating.</li>
+    </ol>
+    <h3>By group</h3>
+    <div style="overflow:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+      <thead><tr style="text-align:left;color:var(--muted)">
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Grp</th>
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Standings after MD2</th>
+        <th style="padding:6px 8px;border-bottom:1px solid var(--border)">Key MD3 game — stake</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:6px 8px"><strong>A</strong></td><td style="padding:6px 8px">Mexico 6 ✅ · Korea 3 · Czechia 1 · S.Africa 1</td><td style="padding:6px 8px"><strong>Korea v South Africa</strong> — decides 2nd; RSA must win.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>B</strong></td><td style="padding:6px 8px">Canada 4 · Switzerland 4 · Bosnia 1 · Qatar 1</td><td style="padding:6px 8px">Canada v Switzerland — top spot (both ~safe). Bosnia v Qatar — 3rd-place survival.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>C</strong></td><td style="padding:6px 8px">Brazil 4 · Morocco 4 · Scotland 3 · Haiti 0</td><td style="padding:6px 8px"><strong>Brazil v Scotland</strong> — Scotland win-or-bust; tightest group.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>D</strong></td><td style="padding:6px 8px">USA 6 ✅ · Australia 3 · Paraguay 3 · Türkiye 0</td><td style="padding:6px 8px"><strong>Australia v Paraguay</strong> — straight shootout for 2nd.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>E</strong></td><td style="padding:6px 8px">Germany 6 ✅ · Côte d'Ivoire 3 · Ecuador 1 · Curaçao 1</td><td style="padding:6px 8px">Côte d'Ivoire v Curaçao — Ivorians' spot / Curaçao's last chance.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>F</strong></td><td style="padding:6px 8px">Netherlands 4 · Japan 4 · Sweden 3 · Tunisia 0</td><td style="padding:6px 8px"><strong>Japan v Sweden</strong> — Sweden must win. NED v Tunisia — top spot.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>G</strong></td><td style="padding:6px 8px">Egypt 4 · Iran 2 · Belgium 2 · N.Zealand 1</td><td style="padding:6px 8px"><strong>Belgium v New Zealand</strong> — Belgium must win. Egypt v Iran — top + Iran's fate.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>H</strong></td><td style="padding:6px 8px">Spain 4 ✅ · Uruguay 2 · Cabo Verde 2 · Saudi 1</td><td style="padding:6px 8px"><strong>Cabo Verde v Saudi</strong> + <strong>Spain v Uruguay</strong> — 2nd wide open; Uruguay sweating.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>I</strong></td><td style="padding:6px 8px">France 6 ✅ · Norway 6 ✅ · Senegal 0 ❌ · Iraq 0 ❌</td><td style="padding:6px 8px">France v Norway — top spot only (both through). Iraq v Senegal dead.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>J</strong></td><td style="padding:6px 8px">Argentina 6 ✅ · Austria 3 · Algeria 3 · Jordan 0</td><td style="padding:6px 8px"><strong>Algeria v Austria</strong> — head-to-head for 2nd. Arg v Jordan dead.</td></tr>
+        <tr><td style="padding:6px 8px"><strong>K</strong></td><td style="padding:6px 8px">Colombia 6 ✅ · Portugal 4 · Congo DR 1 · Uzbekistan 0 ❌</td><td style="padding:6px 8px">Colombia v Portugal — top spot (both ~through).</td></tr>
+        <tr><td style="padding:6px 8px"><strong>L</strong></td><td style="padding:6px 8px">England 4 · Ghana 4 · Croatia 3 · Panama 0 ❌</td><td style="padding:6px 8px"><strong>Croatia v Ghana</strong> — Croatia must win or risk out; England v Panama (Eng cruising).</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h3>Fantasy angle for Round 3</h3>
+    <ul style="margin:0;font-size:13.5px;line-height:1.6">
+      <li><strong>Target must-win sides at full strength:</strong> Belgium (v NZ), Sweden (v Japan), Cabo Verde, Uruguay, Côte d'Ivoire, Algeria/Austria — they'll go for it.</li>
+      <li><strong>Beware rotation in already-qualified group-toppers:</strong> Mexico, USA, Germany, Argentina, France/Norway, Spain may rest key men — captaincy risk.</li>
+      <li><strong>Dead rubbers to avoid:</strong> Iraq v Senegal, Argentina v Jordan, Türkiye v USA — low motivation / heavy rotation.</li>
+    </ul>
+    <p style="color: var(--muted); font-size: 12px;">Standings computed from match results to date; a planning aid, confirm line-ups before deadline.</p>
+  </div>
+`;
 function renderRound(round) {
   const fxs = FIXTURES.filter(f => f.round === round).sort((a,b) => b.gap - a.gap);
   const container = document.getElementById(`tab-round${round}`);
   container.innerHTML = `
+    ${round === 3 ? MD3_STAKES_HTML : ""}
     <div class="panel">
       <h2>Round ${round} fixtures, sorted by ranking gap</h2>
       <p style="color: var(--muted); font-size: 13px; margin-top: 0;">${fxs.length} matches. Bigger gap means bigger fantasy upside for the favourite. Edit player picks below, changes save automatically.</p>

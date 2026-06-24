@@ -23,7 +23,7 @@ This is a genuine integrated rebuild, not three iframes.
   their area container; their theming is driven from the shared `data-theme`.
 - **`/data/`** — the Stats Desk datasets (`teams_array.js`, `intl_array.js`,
   `players_array.js`, `fixtures_array.js`, `qual_array.js`, `fd_standings.js`,
-  `fd_extra.js`).
+  `fd_extra.js`, `discipline.js`).
 - Shared chrome (header, primary navigation, theme engine, fonts, CDN includes,
   CSP) is deduplicated; each area's specialised feature logic and data are kept
   intact.
