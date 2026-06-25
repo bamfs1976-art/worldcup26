@@ -12102,6 +12102,7 @@ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
 <script src="data/fd_standings.js"></script>
 <script src="data/fd_extra.js"></script>
 <script src="data/discipline.js"></script>
+<script src="data/knockout.js"></script>
 <!-- 3. Stats Desk — IIFE isolated -->
 <script>
 (function(){
@@ -15601,6 +15602,27 @@ function updateScen(g){
 }
 function jCrest(code){ const iso=FLAG[code]; return iso?`<img class="crest" src="https://flagcdn.com/w40/${iso}.png" width="20" height="15" alt="" loading="lazy" style="vertical-align:-2px;margin-right:.3rem" onerror="this.style.display='none'">`:''; }
 function jBadge(t){ const m=J_TIER[t]||J_TIER.dead; return `<span style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:${m.c};background:color-mix(in srgb,${m.c} 16%,transparent);padding:.18rem .45rem;border-radius:6px;white-space:nowrap">${m.l}</span>`; }
+function koHtml(){
+  const KO=window.WC_KO; if(!KO||!KO.r32||!KO.r32.length) return "";
+  const cards=KO.r32.slice().sort((a,b)=>a.m-b.m).map(function(k){
+    const teams=`${jCrest(k.hc)}${esc(J_NAME[k.hc]||k.hc)} <span class="faint">v</span> ${jCrest(k.ac)}${esc(J_NAME[k.ac]||k.ac)}`;
+    const rf=k.ref?refForFixture({ref:k.ref}):null, ypg=rf?rf.ypg:null;
+    const pill = ypg!=null ? `<span style="font-weight:700;color:${refRiskHex(ypg)}">🟨 ${ypg.toFixed(1)}</span><span class="faint" style="font-size:.68rem">/g</span>` : `<span class="faint" style="font-size:.7rem">no rating</span>`;
+    const refName=k.ref?esc(k.ref):"TBC";
+    return `<div style="background:var(--surface-2);border-radius:10px;padding:.6rem .75rem;border-left:3px solid var(--danger)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
+        <span style="font-weight:700;line-height:1.3">${teams}</span>${jBadge("ko")}
+      </div>
+      <div class="faint" style="font-size:.72rem;margin:.3rem 0">M${k.m} · R32 · ${esc(fmtFixture({d:k.date}))} · ${esc(k.venue||"")}</div>
+      <div style="display:flex;align-items:center;gap:.4rem;font-size:.76rem;border-top:1px solid var(--border);padding-top:.4rem">🧑‍⚖️ ${refName} ${pill}</div>
+    </div>`;
+  }).join("");
+  return `<div class="surface" style="border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem;border:1px solid var(--danger)">
+    <div style="font-weight:800;font-family:'Bricolage Grotesque',sans-serif;margin-bottom:.2rem">🏆 Round of 32 — win or go home</div>
+    <div class="faint" style="font-size:.72rem;margin-bottom:.5rem">Knockout ties as they're confirmed, with appointed officials. Fills out as the bracket completes.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:.7rem">${cards}</div>
+  </div>`;
+}
 function renderJeopardy(){
   const out=$("jeopardyOut"); if(!out) return;
   const byNum={}; Object.entries(FIXTURES).forEach(([k,fx])=>{ if(fx&&fx.m!=null) byNum[fx.m]={codes:k.split("|"),fx}; });
@@ -15608,7 +15630,7 @@ function renderJeopardy(){
   const sumEl=$("jeopardySummary");
   if(sumEl) sumEl.innerHTML=["ko","decider","survival","topspot","qualify","longshot","dead"].filter(t=>counts[t]).map(t=>`<span style="display:inline-flex;align-items:center;gap:.3rem">${jBadge(t)}<span class="faint" style="font-size:.74rem">${counts[t]}</span></span>`).join("");
   const groups=[...new Set(JEOPARDY.map(j=>j.g))].sort();
-  out.innerHTML=groups.map(g=>{
+  out.innerHTML=koHtml()+groups.map(g=>{
     const games=JEOPARDY.filter(j=>j.g===g).sort((a,b)=>J_TIER[a.t].r-J_TIER[b.t].r);
     const cards=games.map(j=>{
       const e=byNum[j.m]; if(!e) return "";
