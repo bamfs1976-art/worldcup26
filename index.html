@@ -15602,31 +15602,38 @@ function updateScen(g){
 }
 function jCrest(code){ const iso=FLAG[code]; return iso?`<img class="crest" src="https://flagcdn.com/w40/${iso}.png" width="20" height="15" alt="" loading="lazy" style="vertical-align:-2px;margin-right:.3rem" onerror="this.style.display='none'">`:''; }
 function jBadge(t){ const m=J_TIER[t]||J_TIER.dead; return `<span style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:${m.c};background:color-mix(in srgb,${m.c} 16%,transparent);padding:.18rem .45rem;border-radius:6px;white-space:nowrap">${m.l}</span>`; }
+function koCard(k){
+  const teams=(k.hc&&k.ac)
+    ? `${jCrest(k.hc)}${esc(J_NAME[k.hc]||k.hc)} <span class="faint">v</span> ${jCrest(k.ac)}${esc(J_NAME[k.ac]||k.ac)}`
+    : `<span style="font-weight:600">${esc(k.slot||"TBC")}</span>`;
+  const rf=k.ref?refForFixture({ref:k.ref}):null, ypg=rf?rf.ypg:null;
+  const pill = ypg!=null ? `<span style="font-weight:700;color:${refRiskHex(ypg)}">🟨 ${ypg.toFixed(1)}</span><span class="faint" style="font-size:.68rem">/g</span>` : "";
+  const crew = (k.officials&&k.officials.length)
+    ? `<details style="margin-top:.35rem"><summary style="cursor:pointer;font-size:.72rem;color:var(--text-2)">Full officials team</summary><div style="margin-top:.3rem;font-size:.74rem;display:grid;gap:.15rem">${k.officials.map(o=>`<div style="display:flex;justify-content:space-between;gap:.6rem"><span class="faint">${esc(o[0])}</span><span>${esc(o[1])}</span></div>`).join("")}</div></details>`
+    : "";
+  const refLine = k.ref
+    ? `<div style="display:flex;align-items:center;gap:.4rem;font-size:.76rem;border-top:1px solid var(--border);padding-top:.4rem">🧑‍⚖️ ${esc(k.ref)} ${pill}</div>${crew}`
+    : `<div class="faint" style="font-size:.72rem;border-top:1px solid var(--border);padding-top:.4rem">Officials TBC</div>`;
+  return `<div style="background:var(--surface-2);border-radius:10px;padding:.6rem .75rem;border-left:3px solid var(--danger)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
+      <span style="line-height:1.3">${teams}</span><span class="faint" style="font-size:.66rem;white-space:nowrap">M${k.m}</span>
+    </div>
+    <div class="faint" style="font-size:.72rem;margin:.3rem 0">${esc(fmtFixture({d:k.date}))} · ${esc(k.venue||"")}${k.country&&k.country!=="USA"?" ("+esc(k.country)+")":""}</div>
+    ${refLine}
+  </div>`;
+}
 function koHtml(){
-  const KO=window.WC_KO; if(!KO||!KO.r32||!KO.r32.length) return "";
-  const cards=KO.r32.slice().sort((a,b)=>a.m-b.m).map(function(k){
-    const teams=`${jCrest(k.hc)}${esc(J_NAME[k.hc]||k.hc)} <span class="faint">v</span> ${jCrest(k.ac)}${esc(J_NAME[k.ac]||k.ac)}`;
-    const rf=k.ref?refForFixture({ref:k.ref}):null, ypg=rf?rf.ypg:null;
-    const pill = ypg!=null ? `<span style="font-weight:700;color:${refRiskHex(ypg)}">🟨 ${ypg.toFixed(1)}</span><span class="faint" style="font-size:.68rem">/g</span>` : `<span class="faint" style="font-size:.7rem">no rating</span>`;
-    const refName=k.ref?esc(k.ref):"TBC";
-    const crew = (k.officials&&k.officials.length)
-      ? `<details style="margin-top:.35rem"><summary style="cursor:pointer;font-size:.72rem;color:var(--text-2)">Full officials team</summary>
-          <div style="margin-top:.3rem;font-size:.74rem;display:grid;gap:.15rem">${k.officials.map(o=>`<div style="display:flex;justify-content:space-between;gap:.6rem"><span class="faint">${esc(o[0])}</span><span>${esc(o[1])}</span></div>`).join("")}</div>
-        </details>`
-      : "";
-    return `<div style="background:var(--surface-2);border-radius:10px;padding:.6rem .75rem;border-left:3px solid var(--danger)">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
-        <span style="font-weight:700;line-height:1.3">${teams}</span>${jBadge("ko")}
-      </div>
-      <div class="faint" style="font-size:.72rem;margin:.3rem 0">M${k.m} · ${esc(k.round||"R32")} · ${esc(fmtFixture({d:k.date}))} · ${esc(k.venue||"")}</div>
-      <div style="display:flex;align-items:center;gap:.4rem;font-size:.76rem;border-top:1px solid var(--border);padding-top:.4rem">🧑‍⚖️ ${refName} ${pill}</div>
-      ${crew}
-    </div>`;
+  const KO=window.WC_KO, ms=KO&&KO.matches; if(!ms||!ms.length) return "";
+  const ROUNDS=["Round of 32","Round of 16","Quarter-final","Semi-final","Third-place play-off","Final"];
+  const appointed=ms.filter(m=>m.ref).length;
+  const blocks=ROUNDS.filter(r=>ms.some(m=>m.round===r)).map(function(r){
+    const cards=ms.filter(m=>m.round===r).sort((a,b)=>a.m-b.m).map(koCard).join("");
+    return `<div style="margin-bottom:.7rem"><div style="font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-2);margin:.2rem 0 .45rem">${esc(r)}</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.6rem">${cards}</div></div>`;
   }).join("");
   return `<div class="surface" style="border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem;border:1px solid var(--danger)">
-    <div style="font-weight:800;font-family:'Bricolage Grotesque',sans-serif;margin-bottom:.2rem">🏆 Round of 32 — win or go home</div>
-    <div class="faint" style="font-size:.72rem;margin-bottom:.5rem">Knockout ties as they're confirmed, with appointed officials. Fills out as the bracket completes.</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:.7rem">${cards}</div>
+    <div style="font-weight:800;font-family:'Bricolage Grotesque',sans-serif">🏆 Knockout bracket — win or go home</div>
+    <div class="faint" style="font-size:.72rem;margin:.15rem 0 .6rem">All 32 knockout ties (R32 → Final). Teams and match officials fill in as they're confirmed — ${appointed} appointed so far.</div>
+    ${blocks}
   </div>`;
 }
 function renderJeopardy(){
