@@ -1,5 +1,6 @@
 // World Cup 2026 — player discipline (bookings) extracted from the FIFA
-// post-match summary reports. Coverage: matches 1–48 — the complete group stage.
+// post-match summary reports. Coverage: matches 1–54 (matchdays 1–2 complete,
+// plus the first matchday-3 results). Group stage is 72 matches (MD3 = 49–72).
 // cards: {m:matchNo, team, side:"home"|"away", player, min, card:"Yellow"|"Red"}
 // matches: {m:matchNo, home, away, score}
 // Referee per match is NOT stored here — it is joined at render time from the
@@ -126,7 +127,21 @@ window.WC_DISCIPLINE = {
     {m:47, team:"Uzbekistan", side:"away", player:"Odiljon XAMROBEKOV", min:14, card:"Yellow"},
     {m:48, team:"Colombia", side:"home", player:"Jhon LUCUMI", min:56, card:"Yellow"},
     {m:48, team:"Colombia", side:"home", player:"Jefferson LERMA", min:94, card:"Yellow"},
-    {m:48, team:"Congo DR", side:"away", player:"Charles PICKEL", min:93, card:"Yellow"}
+    {m:48, team:"Congo DR", side:"away", player:"Charles PICKEL", min:93, card:"Yellow"},
+    {m:49, team:"Scotland", side:"home", player:"Ryan CHRISTIE", min:89, card:"Yellow"},
+    {m:49, team:"Brazil", side:"away", player:"DANILO", min:62, card:"Yellow"},
+    {m:49, team:"Brazil", side:"away", player:"Ryan FABINHO", min:82, card:"Yellow"},
+    {m:50, team:"Morocco", side:"home", player:"RAHIMI", min:79, card:"Yellow"},
+    {m:50, team:"Haiti", side:"away", player:"Johny PLACIDE", min:79, card:"Yellow"},
+    {m:50, team:"Haiti", side:"away", player:"Josue CASIMIR", min:93, card:"Yellow"},
+    {m:51, team:"Switzerland", side:"home", player:"Granit XHAKA", min:32, card:"Yellow"},
+    {m:51, team:"Canada", side:"away", player:"Cyle LARIN", min:32, card:"Yellow"},
+    {m:51, team:"Canada", side:"away", player:"Liam MILLAR", min:87, card:"Yellow"},
+    {m:52, team:"Bosnia and Herzegovina", side:"home", player:"Ermin MAHMIC", min:82, card:"Yellow"},
+    {m:52, team:"Qatar", side:"away", player:"Arjan AHMED", min:78, card:"Yellow"},
+    {m:53, team:"Mexico", side:"away", player:"Edson ALVAREZ", min:64, card:"Yellow"},
+    {m:54, team:"South Africa", side:"home", player:"Aubrey MODIBA", min:72, card:"Yellow"},
+    {m:54, team:"Korea Republic", side:"away", player:"CHO", min:78, card:"Yellow"}
   ],
   matches: [
     {m:1, home:"Mexico", away:"South Africa", score:"2-0"},
@@ -176,6 +191,12 @@ window.WC_DISCIPLINE = {
     {m:45, home:"England", away:"Ghana", score:"0-0"},
     {m:46, home:"Panama", away:"Croatia", score:"0-1"},
     {m:47, home:"Portugal", away:"Uzbekistan", score:"5-0"},
-    {m:48, home:"Colombia", away:"Congo DR", score:"1-0"}
+    {m:48, home:"Colombia", away:"Congo DR", score:"1-0"},
+    {m:49, home:"Scotland", away:"Brazil", score:"0-3"},
+    {m:50, home:"Morocco", away:"Haiti", score:"4-2"},
+    {m:51, home:"Switzerland", away:"Canada", score:"2-1"},
+    {m:52, home:"Bosnia and Herzegovina", away:"Qatar", score:"3-1"},
+    {m:53, home:"Czechia", away:"Mexico", score:"0-3"},
+    {m:54, home:"South Africa", away:"Korea Republic", score:"1-0"}
   ]
 };
