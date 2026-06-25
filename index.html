@@ -15609,12 +15609,18 @@ function koHtml(){
     const rf=k.ref?refForFixture({ref:k.ref}):null, ypg=rf?rf.ypg:null;
     const pill = ypg!=null ? `<span style="font-weight:700;color:${refRiskHex(ypg)}">🟨 ${ypg.toFixed(1)}</span><span class="faint" style="font-size:.68rem">/g</span>` : `<span class="faint" style="font-size:.7rem">no rating</span>`;
     const refName=k.ref?esc(k.ref):"TBC";
+    const crew = (k.officials&&k.officials.length)
+      ? `<details style="margin-top:.35rem"><summary style="cursor:pointer;font-size:.72rem;color:var(--text-2)">Full officials team</summary>
+          <div style="margin-top:.3rem;font-size:.74rem;display:grid;gap:.15rem">${k.officials.map(o=>`<div style="display:flex;justify-content:space-between;gap:.6rem"><span class="faint">${esc(o[0])}</span><span>${esc(o[1])}</span></div>`).join("")}</div>
+        </details>`
+      : "";
     return `<div style="background:var(--surface-2);border-radius:10px;padding:.6rem .75rem;border-left:3px solid var(--danger)">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
         <span style="font-weight:700;line-height:1.3">${teams}</span>${jBadge("ko")}
       </div>
-      <div class="faint" style="font-size:.72rem;margin:.3rem 0">M${k.m} · R32 · ${esc(fmtFixture({d:k.date}))} · ${esc(k.venue||"")}</div>
+      <div class="faint" style="font-size:.72rem;margin:.3rem 0">M${k.m} · ${esc(k.round||"R32")} · ${esc(fmtFixture({d:k.date}))} · ${esc(k.venue||"")}</div>
       <div style="display:flex;align-items:center;gap:.4rem;font-size:.76rem;border-top:1px solid var(--border);padding-top:.4rem">🧑‍⚖️ ${refName} ${pill}</div>
+      ${crew}
     </div>`;
   }).join("");
   return `<div class="surface" style="border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem;border:1px solid var(--danger)">
