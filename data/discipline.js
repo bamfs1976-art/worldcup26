@@ -1,6 +1,6 @@
 // World Cup 2026 — player discipline (bookings) extracted from the FIFA
-// post-match summary reports. Coverage: matches 1–54 (matchdays 1–2 complete,
-// plus the first matchday-3 results). Group stage is 72 matches (MD3 = 49–72).
+// post-match summary reports. Coverage: matches 1–60 (matchdays 1–2 complete,
+// plus matchday-3 so far). Group stage is 72 matches (MD3 = 49–72).
 // cards: {m:matchNo, team, side:"home"|"away", player, min, card:"Yellow"|"Red"}
 // matches: {m:matchNo, home, away, score}
 // Referee per match is NOT stored here — it is joined at render time from the
@@ -141,7 +141,20 @@ window.WC_DISCIPLINE = {
     {m:52, team:"Qatar", side:"away", player:"Arjan AHMED", min:78, card:"Yellow"},
     {m:53, team:"Mexico", side:"away", player:"Edson ALVAREZ", min:64, card:"Yellow"},
     {m:54, team:"South Africa", side:"home", player:"Aubrey MODIBA", min:72, card:"Yellow"},
-    {m:54, team:"Korea Republic", side:"away", player:"CHO", min:78, card:"Yellow"}
+    {m:54, team:"Korea Republic", side:"away", player:"CHO", min:78, card:"Yellow"},
+    {m:55, team:"Curaçao", side:"home", player:"Juninho BACUNA", min:75, card:"Yellow"},
+    {m:55, team:"Curaçao", side:"home", player:"KASTANEER", min:83, card:"Yellow"},
+    {m:55, team:"Côte d'Ivoire", side:"away", player:"Nicolas PEPE", min:34, card:"Yellow"},
+    {m:56, team:"Ecuador", side:"home", player:"Piero HINCAPIE", min:43, card:"Yellow"},
+    {m:56, team:"Ecuador", side:"home", player:"PLATA", min:89, card:"Yellow"},
+    {m:56, team:"Ecuador", side:"home", player:"Alan FRANCO", min:50, card:"Yellow"},
+    {m:56, team:"Germany", side:"away", player:"Aleksandar PAVLOVIC", min:44, card:"Yellow"},
+    {m:57, team:"Japan", side:"home", player:"Shogo TANIGUCHI", min:77, card:"Yellow"},
+    {m:57, team:"Sweden", side:"away", player:"Isak HIEN", min:32, card:"Yellow"},
+    {m:57, team:"Sweden", side:"away", player:"Viktor GYOKERES", min:84, card:"Yellow"},
+    {m:59, team:"USA", side:"away", player:"Sebastian BERHALTER", min:18, card:"Yellow"},
+    {m:60, team:"Paraguay", side:"home", player:"Diego GOMEZ", min:77, card:"Yellow"},
+    {m:60, team:"Australia", side:"away", player:"Jackson IRVINE", min:46, card:"Yellow"}
   ],
   matches: [
     {m:1, home:"Mexico", away:"South Africa", score:"2-0"},
@@ -197,6 +210,12 @@ window.WC_DISCIPLINE = {
     {m:51, home:"Switzerland", away:"Canada", score:"2-1"},
     {m:52, home:"Bosnia and Herzegovina", away:"Qatar", score:"3-1"},
     {m:53, home:"Czechia", away:"Mexico", score:"0-3"},
-    {m:54, home:"South Africa", away:"Korea Republic", score:"1-0"}
+    {m:54, home:"South Africa", away:"Korea Republic", score:"1-0"},
+    {m:55, home:"Curaçao", away:"Côte d'Ivoire", score:"0-2"},
+    {m:56, home:"Ecuador", away:"Germany", score:"2-1"},
+    {m:57, home:"Japan", away:"Sweden", score:"1-1"},
+    {m:58, home:"Tunisia", away:"Netherlands", score:"1-3"},
+    {m:59, home:"Türkiye", away:"USA", score:"3-2"},
+    {m:60, home:"Paraguay", away:"Australia", score:"0-0"}
   ]
 };
