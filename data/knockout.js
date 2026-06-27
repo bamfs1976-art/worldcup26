@@ -7,9 +7,9 @@ window.WC_KO = {
   matches: [
     // ---- Round of 32 ----
     {m:73, round:"Round of 32", date:"2026-06-28 19:00", venue:"Los Angeles", country:"USA", slot:"A runners-up v B runners-up", hc:"RSA", ac:"CAN", ref:"João Pinheiro (POR)", officials:[["Referee","João Pinheiro (POR)"],["Assistant referee 1","Bruno Jesus (POR)"],["Assistant referee 2","Luciano Maia (POR)"],["4th official","Omar Al-Ali (UAE)"],["Reserve assistant referee","Mohamed Alhammadi (UAE)"]]},
-    {m:74, round:"Round of 32", date:"2026-06-29 20:30", venue:"Foxborough", country:"USA", slot:"E winners v Best 3rd (A/B/C/D/F)"},
-    {m:75, round:"Round of 32", date:"2026-06-30 01:00", venue:"Guadalupe", country:"Mexico", slot:"F winners v C runners-up"},
-    {m:76, round:"Round of 32", date:"2026-06-29 17:00", venue:"Houston", country:"USA", slot:"C winners v F runners-up"},
+    {m:74, round:"Round of 32", date:"2026-06-29 20:30", venue:"Foxborough", country:"USA", slot:"E winners v Best 3rd (A/B/C/D/F)", hc:"GER", ac:"PAR", ref:"Jalal Jayed (MAR)", officials:[["Referee","Jalal Jayed (MAR)"],["Assistant referee 1","Zakaria Brinsi (MAR)"],["Assistant referee 2","Mostafa Akarkad (MAR)"],["4th official","Ning Ma (CHN)"],["Reserve assistant referee","Fei Zhou (CHN)"]]},
+    {m:75, round:"Round of 32", date:"2026-06-30 01:00", venue:"Guadalupe", country:"Mexico", slot:"F winners v C runners-up", hc:"NED", ac:"MAR", ref:"Wilton Sampaio (BRA)", officials:[["Referee","Wilton Sampaio (BRA)"],["Assistant referee 1","Bruno Pires (BRA)"],["Assistant referee 2","Bruno Boschilia (BRA)"],["4th official","Cristian Garav (CHI)"],["Reserve assistant referee","Jose Retamal (CHI)"]]},
+    {m:76, round:"Round of 32", date:"2026-06-29 17:00", venue:"Houston", country:"USA", slot:"C winners v F runners-up", hc:"BRA", ac:"JPN", ref:"Maurizio Mariani (ITA)", officials:[["Referee","Maurizio Mariani (ITA)"],["Assistant referee 1","Daniele Bindoni (ITA)"],["Assistant referee 2","Alberto Tegoni (ITA)"],["4th official","Sandro Schaerer (SUI)"],["Reserve assistant referee","Stephane De Almeida (SUI)"]]},
     {m:77, round:"Round of 32", date:"2026-06-30 21:00", venue:"New Jersey", country:"USA", slot:"I winners v Best 3rd (C/D/F/G/H)"},
     {m:78, round:"Round of 32", date:"2026-06-30 17:00", venue:"Arlington", country:"USA", slot:"E runners-up v I runners-up"},
     {m:79, round:"Round of 32", date:"2026-07-01 01:00", venue:"Mexico City", country:"Mexico", slot:"A winners v Best 3rd (C/E/F/H/I)"},
