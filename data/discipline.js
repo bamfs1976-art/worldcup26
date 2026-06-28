@@ -1,5 +1,5 @@
 // World Cup 2026 — player discipline (bookings) extracted from the FIFA
-// post-match summary reports. Coverage: matches 1–60 (matchdays 1–2 complete,
+// post-match summary reports. Coverage: matches 1–66 (matchdays 1–2 complete,
 // plus matchday-3 so far). Group stage is 72 matches (MD3 = 49–72).
 // cards: {m:matchNo, team, side:"home"|"away", player, min, card:"Yellow"|"Red"}
 // matches: {m:matchNo, home, away, score}
@@ -154,7 +154,35 @@ window.WC_DISCIPLINE = {
     {m:57, team:"Sweden", side:"away", player:"Viktor GYOKERES", min:84, card:"Yellow"},
     {m:59, team:"USA", side:"away", player:"Sebastian BERHALTER", min:18, card:"Yellow"},
     {m:60, team:"Paraguay", side:"home", player:"Diego GOMEZ", min:77, card:"Yellow"},
-    {m:60, team:"Australia", side:"away", player:"Jackson IRVINE", min:46, card:"Yellow"}
+    {m:60, team:"Australia", side:"away", player:"Jackson IRVINE", min:46, card:"Yellow"},
+    // MD3 — Group I (M61-62)
+    {m:61, team:"Norway", side:"home", player:"Patrick BERG", min:10, card:"Yellow"},
+    {m:61, team:"France", side:"away", player:"Aurelien TCHOUAMENI", min:74, card:"Yellow"},
+    {m:62, team:"Senegal", side:"home", player:"Abdoulaye SECK", min:18, card:"Yellow"},
+    {m:62, team:"Senegal", side:"home", player:"Pape GUEYE", min:81, card:"Yellow"},
+    {m:62, team:"Iraq", side:"away", player:"Abdoulaye REBIN", min:9, card:"Red"},
+    {m:62, team:"Iraq", side:"away", player:"AMIR", min:75, card:"Yellow"},
+    {m:62, team:"Iraq", side:"away", player:"MERCHAS", min:90, card:"Yellow"},
+    // MD3 — Group G (M63-64)
+    {m:63, team:"Egypt", side:"home", player:"SABER", min:19, card:"Yellow"},
+    {m:63, team:"Egypt", side:"home", player:"IBRAHIM", min:41, card:"Yellow"},
+    {m:63, team:"Egypt", side:"home", player:"LASHIN", min:92, card:"Yellow"},
+    {m:63, team:"IR Iran", side:"away", player:"Hossein KANANI", min:19, card:"Yellow"},
+    {m:63, team:"IR Iran", side:"away", player:"Ali NEMATI", min:43, card:"Yellow"},
+    {m:63, team:"IR Iran", side:"away", player:"Saeid EZATOLAHI", min:79, card:"Yellow"},
+    {m:63, team:"IR Iran", side:"away", player:"Shoja KHALILZADEH", min:94, card:"Yellow"},
+    {m:64, team:"New Zealand", side:"home", player:"Marko STAMENIC", min:46, card:"Yellow"},
+    {m:64, team:"New Zealand", side:"home", player:"Elijah JUST", min:56, card:"Yellow"},
+    // MD3 — Group H (M65-66)
+    {m:65, team:"Cabo Verde", side:"home", player:"PINA", min:8, card:"Yellow"},
+    {m:65, team:"Saudi Arabia", side:"away", player:"SAUD", min:4, card:"Yellow"},
+    {m:65, team:"Saudi Arabia", side:"away", player:"NASSER", min:67, card:"Yellow"},
+    {m:65, team:"Saudi Arabia", side:"away", player:"FERAS", min:93, card:"Yellow"},
+    {m:66, team:"Uruguay", side:"home", player:"Manuel SANABRIA", min:54, card:"Yellow"},
+    {m:66, team:"Uruguay", side:"home", player:"Guillermo VARELA", min:58, card:"Yellow"},
+    {m:66, team:"Uruguay", side:"home", player:"Nicolas CRUZ", min:93, card:"Yellow"},
+    {m:66, team:"Uruguay", side:"home", player:"Agustin CANOBBIO", min:94, card:"Red"},
+    {m:66, team:"Spain", side:"away", player:"Alex BAENA", min:46, card:"Yellow"}
   ],
   matches: [
     {m:1, home:"Mexico", away:"South Africa", score:"2-0"},
@@ -216,6 +244,12 @@ window.WC_DISCIPLINE = {
     {m:57, home:"Japan", away:"Sweden", score:"1-1"},
     {m:58, home:"Tunisia", away:"Netherlands", score:"1-3"},
     {m:59, home:"Türkiye", away:"USA", score:"3-2"},
-    {m:60, home:"Paraguay", away:"Australia", score:"0-0"}
+    {m:60, home:"Paraguay", away:"Australia", score:"0-0"},
+    {m:61, home:"Norway", away:"France", score:"1-4"},
+    {m:62, home:"Senegal", away:"Iraq", score:"5-0"},
+    {m:63, home:"Egypt", away:"IR Iran", score:"1-1"},
+    {m:64, home:"New Zealand", away:"Belgium", score:"1-5"},
+    {m:65, home:"Cabo Verde", away:"Saudi Arabia", score:"0-0"},
+    {m:66, home:"Uruguay", away:"Spain", score:"0-1"}
   ]
 };
