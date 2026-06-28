@@ -1,6 +1,5 @@
 // World Cup 2026 — player discipline (bookings) extracted from the FIFA
-// post-match summary reports. Coverage: matches 1–66 (matchdays 1–2 complete,
-// plus matchday-3 so far). Group stage is 72 matches (MD3 = 49–72).
+// post-match summary reports. Coverage: matches 1–72 (group stage complete; 72/72 played).
 // cards: {m:matchNo, team, side:"home"|"away", player, min, card:"Yellow"|"Red"}
 // matches: {m:matchNo, home, away, score}
 // Referee per match is NOT stored here — it is joined at render time from the
@@ -182,7 +181,25 @@ window.WC_DISCIPLINE = {
     {m:66, team:"Uruguay", side:"home", player:"Guillermo VARELA", min:58, card:"Yellow"},
     {m:66, team:"Uruguay", side:"home", player:"Nicolas CRUZ", min:93, card:"Yellow"},
     {m:66, team:"Uruguay", side:"home", player:"Agustin CANOBBIO", min:94, card:"Red"},
-    {m:66, team:"Spain", side:"away", player:"Alex BAENA", min:46, card:"Yellow"}
+    {m:66, team:"Spain", side:"away", player:"Alex BAENA", min:46, card:"Yellow"},
+    // MD3 — Group L (M67-68)
+    {m:67, team:"Panama", side:"home", player:"FAJARDO", min:53, card:"Yellow"},
+    {m:67, team:"Panama", side:"home", player:"Andres ANDRADE", min:84, card:"Yellow"},
+    {m:67, team:"England", side:"away", player:"Jarell QUANSAH", min:60, card:"Yellow"},
+    {m:68, team:"Croatia", side:"home", player:"PERISIC", min:68, card:"Yellow"},
+    {m:68, team:"Ghana", side:"away", player:"Peprah OPPONG", min:94, card:"Yellow"},
+    // MD3 — Group J (M69-70)
+    {m:69, team:"Austria", side:"away", player:"Marko ARNAUTOVIC", min:11, card:"Yellow"},
+    {m:70, team:"Jordan", side:"home", player:"ABUTAHA", min:17, card:"Yellow"},
+    {m:70, team:"Jordan", side:"home", player:"ALARAB", min:64, card:"Yellow"},
+    {m:70, team:"Jordan", side:"home", player:"ABUZRAIQ", min:94, card:"Yellow"},
+    // MD3 — Group K (M71-72)
+    {m:71, team:"Colombia", side:"home", player:"Gustavo PUERTA", min:86, card:"Yellow"},
+    {m:72, team:"Congo DR", side:"home", player:"Noah SADIKI", min:20, card:"Yellow"},
+    {m:72, team:"Congo DR", side:"home", player:"Nathanael MBUKU", min:49, card:"Yellow"},
+    {m:72, team:"Congo DR", side:"home", player:"Samuel MOUTOUSSAMY", min:62, card:"Yellow"},
+    {m:72, team:"Uzbekistan", side:"away", player:"Abdukodir KHUSANOV", min:43, card:"Yellow"},
+    {m:72, team:"Uzbekistan", side:"away", player:"Sherzod NASRULLAEV", min:47, card:"Yellow"}
   ],
   matches: [
     {m:1, home:"Mexico", away:"South Africa", score:"2-0"},
@@ -250,6 +267,12 @@ window.WC_DISCIPLINE = {
     {m:63, home:"Egypt", away:"IR Iran", score:"1-1"},
     {m:64, home:"New Zealand", away:"Belgium", score:"1-5"},
     {m:65, home:"Cabo Verde", away:"Saudi Arabia", score:"0-0"},
-    {m:66, home:"Uruguay", away:"Spain", score:"0-1"}
+    {m:66, home:"Uruguay", away:"Spain", score:"0-1"},
+    {m:67, home:"Panama", away:"England", score:"0-2"},
+    {m:68, home:"Croatia", away:"Ghana", score:"2-1"},
+    {m:69, home:"Algeria", away:"Austria", score:"3-3"},
+    {m:70, home:"Jordan", away:"Argentina", score:"1-3"},
+    {m:71, home:"Colombia", away:"Portugal", score:"0-0"},
+    {m:72, home:"Congo DR", away:"Uzbekistan", score:"3-1"}
   ]
 };
