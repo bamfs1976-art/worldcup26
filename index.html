@@ -2772,6 +2772,21 @@ main { max-width: var(--max-w); margin: 0 auto; padding: var(--sp-6) var(--sp-6)
 }
 .sim-ko-title::after { content: ''; flex: 1; height: 1px; background: var(--bdr-gold); }
 
+.ko-round-head{display:flex;align-items:center;gap:8px;font-family:'Bebas Neue',sans-serif;font-size:var(--tx-md);color:var(--gold);letter-spacing:2px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:6px;border-bottom:1px solid var(--bdr,#252535)}
+.ko-round-head span{font-family:'Barlow Condensed',sans-serif;font-size:var(--tx-xs);letter-spacing:1px;color:var(--tx3);text-transform:uppercase}
+.ko-row{display:grid;grid-template-columns:46px 92px 1fr auto;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:var(--tx-sm)}
+.ko-row:last-child{border-bottom:none}
+.ko-m{font-family:'Bebas Neue',sans-serif;color:var(--tx3);letter-spacing:1px;font-size:var(--tx-xs)}
+.ko-when{display:flex;flex-direction:column;line-height:1.2}
+.ko-when b{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.ko-time{font-size:var(--tx-xs);color:var(--accent-blue,#3b82f6);font-weight:700}
+.ko-fix{color:var(--tx2,#cdd6e0);font-family:'Barlow Condensed',sans-serif}
+.ko-venue{text-align:right;display:flex;flex-direction:column;line-height:1.2;font-weight:700;font-family:'Barlow Condensed',sans-serif}
+.ko-country{font-size:var(--tx-xs);color:var(--tx3);font-weight:400}
+.ko-row.has-score{background:rgba(34,197,94,0.04)}.ko-row.has-score .ko-fix{color:var(--tx,#f1f5f9)}
+.ko-score-pill{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:10px;background:var(--gold);color:#0c0c14;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;font-size:var(--tx-xs);font-weight:700;vertical-align:middle}
+@media(max-width:560px){.ko-row{grid-template-columns:38px 78px 1fr;row-gap:2px}.ko-venue{grid-column:2/4;text-align:left;flex-direction:row;gap:6px;font-size:var(--tx-xs)}}
+
 .sim-ko-row {
   display: grid; grid-template-columns: 1fr auto 1fr;
   align-items: center; gap: var(--sp-3);
@@ -5015,15 +5030,16 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
 
 <div data-was-main>
 
-<!-- GROUPS — Enhancement 2: Today's Matches hero -->
+<!-- GROUPS / KNOCKOUT — Today's Matches hero + group tables -->
 <section class="section active" id="sec-groups">
-  <!-- Phase 4.11: Today's Matches landing view (auto-shown during tournament) -->
+  <!-- Today's Matches landing view -->
   <div id="todaySection"></div>
   <div id="todayHero"></div>
+  <div id="koSchedule"></div>
   <div class="section-header">
     <div>
       <div class="section-title">Group Stage</div>
-      <div class="section-sub">72 fixtures · 12 groups · All kick-off times UTC · Click any fixture to enter result</div>
+      <div class="section-sub">72 fixtures · 12 groups complete · Knockout schedule above · Click any fixture to edit result</div>
     </div>
     <div class="section-actions">
       <span class="pill gold" id="playedPill">0 / 72 played</span>
@@ -5100,7 +5116,7 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
     <button class="brs-btn" onclick="scrollBracketTo('final-col',this)">🏆 Final</button>
   </div>
   <div class="bracket-scroll-hint">← Swipe left to see all rounds →</div>
-  <div class="bracket-update-note" id="bracketNote">⚡ Auto-updates from group results — enter group scores to populate R32</div>
+  <div class="bracket-update-note" id="bracketNote">⚡ Official R32 matchups locked in — enter R32 scores to auto-populate R16 onwards</div>
   <div class="bracket-pager" id="bracketPager" aria-hidden="true"></div>
   <div class="bracket-wrap"><div class="bracket-frame" id="bracketFrame"></div></div>
 </section>
@@ -5837,6 +5853,7 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
 
   <!-- KNOCKOUT -->
   <section id="panel-knockout" role="tabpanel" aria-labelledby="tab-knockout" hidden>
+    <div id="koHeatOut"></div>
     <div id="knockoutOut"></div>
   </section>
 
@@ -6797,6 +6814,13 @@ html[data-theme="dark"] #area-fantasy .fdr-table th{color:#c3c8de}
   </div>
 
   <div class="panel">
+    <h2>Round of 32 — the actual draw</h2>
+    <p style="color: var(--muted); font-size: 13px;">Group stage complete (27 Jun 2026). All 16 ties below, sorted by mismatch size (biggest first) using FIFA April 2026 ranks. Pairings final; some dates/venues provisional.</p>
+    <div id="r32Draw"></div>
+    <p style="color: var(--muted); font-size: 12px; margin-top: 6px;"><strong>R16 collisions to plan for:</strong> the Spain v Austria winner meets the Portugal v Croatia winner; the France v Sweden winner meets the Germany v Paraguay winner. Don't double-invest in two teams that knock each other out.</p>
+  </div>
+
+  <div class="panel">
     <h2>Squad spine recommendation</h2>
     <p style="color: var(--muted); font-size: 13px;">Teams with the most lopsided fixtures across the group stage. Per-nation max is 3, so pick 2-3 players from these nations.</p>
     <div id="spineRecommendation"></div>
@@ -6926,6 +6950,10 @@ const QF=[
   {id:'qf_2',v:'Miami',d:'Jul 11',m:99},{id:'qf_3',v:'Kansas City',d:'Jul 12',m:100}
 ];
 const SF=[{id:'sf_0',v:'Dallas',d:'Jul 14',m:101},{id:'sf_1',v:'Atlanta',d:'Jul 15',m:102}];
+
+// Full knockout schedule with kick-off times in UK/BST
+const KO_SCHEDULE=[{"m":73,"round":"Round of 32","date":"2026-06-28","ko":"20:00","venue":"Los Angeles","country":"USA","fix":"South Africa v Canada"},{"m":76,"round":"Round of 32","date":"2026-06-29","ko":"18:00","venue":"Houston","country":"USA","fix":"Brazil v Japan"},{"m":74,"round":"Round of 32","date":"2026-06-29","ko":"21:30","venue":"Foxborough","country":"USA","fix":"Germany v Paraguay"},{"m":75,"round":"Round of 32","date":"2026-06-30","ko":"02:00","venue":"Guadalupe","country":"Mexico","fix":"Netherlands v Morocco"},{"m":78,"round":"Round of 32","date":"2026-06-30","ko":"18:00","venue":"Arlington","country":"USA","fix":"Ivory Coast v Norway"},{"m":77,"round":"Round of 32","date":"2026-06-30","ko":"22:00","venue":"New Jersey","country":"USA","fix":"France v Sweden"},{"m":79,"round":"Round of 32","date":"2026-07-01","ko":"02:00","venue":"Mexico City","country":"Mexico","fix":"Mexico v Ecuador"},{"m":80,"round":"Round of 32","date":"2026-07-01","ko":"17:00","venue":"Atlanta","country":"USA","fix":"England v DR Congo"},{"m":82,"round":"Round of 32","date":"2026-07-01","ko":"21:00","venue":"Seattle","country":"USA","fix":"Belgium v Senegal"},{"m":81,"round":"Round of 32","date":"2026-07-02","ko":"01:00","venue":"Santa Clara","country":"USA","fix":"USA v Bosnia-Herzegovina"},{"m":84,"round":"Round of 32","date":"2026-07-02","ko":"20:00","venue":"Los Angeles","country":"USA","fix":"Spain v Austria"},{"m":83,"round":"Round of 32","date":"2026-07-03","ko":"00:00","venue":"Toronto","country":"Canada","fix":"Portugal v Croatia"},{"m":85,"round":"Round of 32","date":"2026-07-03","ko":"04:00","venue":"Vancouver","country":"Canada","fix":"Switzerland v Algeria"},{"m":88,"round":"Round of 32","date":"2026-07-03","ko":"19:00","venue":"Arlington","country":"USA","fix":"Australia v Egypt"},{"m":86,"round":"Round of 32","date":"2026-07-03","ko":"23:00","venue":"Miami","country":"USA","fix":"Argentina v Cape Verde"},{"m":87,"round":"Round of 32","date":"2026-07-04","ko":"02:30","venue":"Kansas City","country":"USA","fix":"Colombia v Ghana"},{"m":90,"round":"Round of 16","date":"2026-07-04","ko":"18:00","venue":"Houston","country":"USA","fix":"M73 winner (S. Africa/Canada) v M75 winner (Netherlands/Morocco)"},{"m":89,"round":"Round of 16","date":"2026-07-04","ko":"22:00","venue":"Philadelphia","country":"USA","fix":"M74 winner (Germany/Paraguay) v M77 winner (France/Sweden)"},{"m":91,"round":"Round of 16","date":"2026-07-05","ko":"21:00","venue":"New Jersey","country":"USA","fix":"M76 winner (Brazil/Japan) v M78 winner (Ivory Coast/Norway)"},{"m":92,"round":"Round of 16","date":"2026-07-06","ko":"01:00","venue":"Mexico City","country":"Mexico","fix":"M79 winner (Mexico/Ecuador) v M80 winner (England/DR Congo)"},{"m":93,"round":"Round of 16","date":"2026-07-06","ko":"20:00","venue":"Arlington","country":"USA","fix":"M83 winner (Portugal/Croatia) v M84 winner (Spain/Austria)"},{"m":94,"round":"Round of 16","date":"2026-07-07","ko":"01:00","venue":"Seattle","country":"USA","fix":"M81 winner (USA/Bosnia-H.) v M82 winner (Belgium/Senegal)"},{"m":95,"round":"Round of 16","date":"2026-07-07","ko":"17:00","venue":"Atlanta","country":"USA","fix":"M86 winner (Argentina/Cape Verde) v M88 winner (Australia/Egypt)"},{"m":96,"round":"Round of 16","date":"2026-07-07","ko":"21:00","venue":"Vancouver","country":"Canada","fix":"M85 winner (Switzerland/Algeria) v M87 winner (Colombia/Ghana)"},{"m":97,"round":"Quarter-final","date":"2026-07-09","ko":"21:00","venue":"Foxborough","country":"USA","fix":"M89 winner v M90 winner"},{"m":98,"round":"Quarter-final","date":"2026-07-10","ko":"20:00","venue":"Los Angeles","country":"USA","fix":"M93 winner v M94 winner"},{"m":99,"round":"Quarter-final","date":"2026-07-11","ko":"22:00","venue":"Miami","country":"USA","fix":"M91 winner v M92 winner"},{"m":100,"round":"Quarter-final","date":"2026-07-12","ko":"02:00","venue":"Kansas City","country":"USA","fix":"M95 winner v M96 winner"},{"m":101,"round":"Semi-final","date":"2026-07-14","ko":"20:00","venue":"Arlington","country":"USA","fix":"M97 winner v M98 winner"},{"m":102,"round":"Semi-final","date":"2026-07-15","ko":"20:00","venue":"Atlanta","country":"USA","fix":"M99 winner v M100 winner"},{"m":103,"round":"Third-place play-off","date":"2026-07-18","ko":"22:00","venue":"Miami","country":"USA","fix":"M101 loser v M102 loser"},{"m":104,"round":"Final","date":"2026-07-19","ko":"20:00","venue":"New Jersey","country":"USA","fix":"M101 winner v M102 winner"}];
+const KO_BY_M={}; KO_SCHEDULE.forEach(k=>KO_BY_M[k.m]=k);
 
 // Official FIFA assign-third table (key rows from spreadsheet)
 const ASSIGN_THIRD=[
@@ -7194,56 +7222,78 @@ function allGroupResults(){
 }
 
 // ═══════════════════════════════════════════════════════
-// TODAY'S MATCHES HERO — Enhancement 2
+// TODAY'S MATCHES HERO — Enhancement 2 (updated to include knockout fixtures)
 // ═══════════════════════════════════════════════════════
 function renderTodayHero(){
   const el=document.getElementById('todayHero');
   if(!el)return;
   const now=new Date();
-  const todayStr=now.toISOString().slice(0,10);
-  // Get next 5 days of matches sorted by datetime
   const upcoming=[];
+
+  // Group-stage fixtures
   Object.keys(G).forEach(g=>{
     FX[g].forEach(([a,b,num,dt,venue],fi)=>{
-      const matchDate=dt.slice(0,10);
       const msUtc=new Date(dt.replace(' ','T')+'Z').getTime();
-      upcoming.push({g,fi,a,b,num,dt,venue,matchDate,msUtc});
+      const key=`${g}_${fi}`;
+      const hasScore=ST.scores[key]!==undefined;
+      const sd=hasScore?ST.scores[key]:null;
+      upcoming.push({
+        type:'group', msUtc, dt, venue, num,
+        t1:G[g].t[a], t2:G[g].t[b], f1:G[g].f[a], f2:G[g].f[b],
+        s1:sd?sd[0]:'', s2:sd?sd[1]:'', hasScore,
+        badge:`Grp ${g}`, onclick:`openModal('${g}',${fi})`
+      });
     });
   });
-  upcoming.sort((x,y)=>x.msUtc-y.msUtc);
 
-  // Show fixtures from today onwards (or if all done, last 5)
+  // Knockout fixtures (KO_SCHEDULE times are UK/BST)
+  if(typeof KO_SCHEDULE!=='undefined'){
+    const roundShort={'Round of 32':'R32','Round of 16':'R16','Quarter-final':'QF','Semi-final':'SF','Third-place play-off':'3rd','Final':'Final'};
+    KO_SCHEDULE.forEach(k=>{
+      const msUtc=new Date(`${k.date}T${k.ko}:00+01:00`).getTime();
+      const r=typeof resolveKoMatch==='function'?resolveKoMatch(k.m):{id:null,t1:'TBD',t2:'TBD'};
+      const sd=(r.id && ST.bScores[r.id]) ? ST.bScores[r.id] : null;
+      const hasScore=!!(sd && sd.s1!==undefined && sd.s2!==undefined);
+      upcoming.push({
+        type:'ko', msUtc, dt:`${k.date} ${k.ko}`, venue:k.venue, num:k.m,
+        t1:r.t1, t2:r.t2, f1:getFlag(r.t1), f2:getFlag(r.t2),
+        s1:hasScore?sd.s1:'', s2:hasScore?sd.s2:'', hasScore,
+        badge:roundShort[k.round]||k.round, onclick:`openKoMatch(${k.m})`
+      });
+    });
+  }
+
+  upcoming.sort((x,y)=>x.msUtc-y.msUtc);
   const future=upcoming.filter(m=>m.msUtc>now.getTime()-3*3600000);
   const toShow=future.length>0?future.slice(0,8):upcoming.slice(-8);
-
   if(toShow.length===0){el.innerHTML='';return;}
 
-  // Find "next" match
   const nextIdx=toShow.findIndex(m=>m.msUtc>now.getTime());
+  const fmtLocalFromMs=ms=>{
+    const localMs=ms+(ST.tzOffset*3600000);
+    const d=new Date(localMs);
+    return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')+' '+tzLabel();
+  };
 
-  let cards=toShow.map((m,i)=>{
-    const key=`${m.g}_${m.fi}`;
-    const hasScore=ST.scores[key]!==undefined;
-    const[sa,sb]=hasScore?ST.scores[key]:['',''];
+  const cards=toShow.map((m,i)=>{
     const isNext=i===nextIdx;
     const dateLabel=m.dt.slice(5,10).replace('-','/');
-    const timeLabel=fmtLocalTime(m.dt)+' '+tzLabel();
-
-    return`<div class="today-match-card ${hasScore?'has-score':''} ${isNext?'next-up':''}" onclick="openModal('${m.g}',${m.fi})">
-      <div class="tm-badge ${isNext?'next':''}">${isNext?'▶ Next Up':''} ${hasScore?'✓ Full Time':''}M${m.num} · Grp ${m.g}</div>
+    const timeLabel=m.type==='ko'?fmtLocalFromMs(m.msUtc):(fmtLocalTime(m.dt)+' '+tzLabel());
+    return`<div class="today-match-card ${m.hasScore?'has-score':''} ${isNext?'next-up':''}" onclick="${m.onclick}">
+      <div class="tm-badge ${isNext?'next':''}">${isNext?'▶ Next Up':''} ${m.hasScore?'✓ Full Time':''}M${m.num} · ${m.badge}</div>
       <div class="tm-teams">
         <div class="tm-team">
-          <div class="tm-flag">${G[m.g].f[m.a]}</div>
-          <div class="tm-name">${G[m.g].t[m.a]}</div>
+          <div class="tm-flag">${m.f1}</div>
+          <div class="tm-name">${m.t1}</div>
         </div>
         <div class="tm-score-box">
-          <div class="tm-score">${hasScore?sa:'–'}</div>
+          <div class="tm-score">${m.hasScore?m.s1:'–'}</div>
           <div class="tm-dash">:</div>
-          <div class="tm-score">${hasScore?sb:'–'}</div>
+          <div class="tm-score">${m.hasScore?m.s2:'–'}</div>
         </div>
         <div class="tm-team">
-          <div class="tm-flag">${G[m.g].f[m.b]}</div>
-          <div class="tm-name">${G[m.g].t[m.b]}</div>
+          <div class="tm-flag">${m.f2}</div>
+          <div class="tm-name">${m.t2}</div>
         </div>
       </div>
       <div class="tm-meta">${dateLabel} · ${timeLabel}<br>${m.venue}</div>
@@ -7254,6 +7304,59 @@ function renderTodayHero(){
     <div class="today-hero-title">⚡ Upcoming Fixtures</div>
     <div class="today-matches-strip">${cards}</div>
   </div>`;
+}
+
+// Resolve knockout match to bracket ID + team names
+function resolveKoMatch(m){
+  if(m>=73&&m<=88){
+    const r=R32.find(x=>x.m===m);
+    if(r) return {id:r.id, t1:r.t1k, t2:r.t2k};
+  }
+  if(m>=89&&m<=96){ const id='r16_'+(m-89); const d=ST.bScores[id]||{}; return {id, t1:d.team1||'TBD', t2:d.team2||'TBD'}; }
+  if(m>=97&&m<=100){ const id='qf_'+(m-97); const d=ST.bScores[id]||{}; return {id, t1:d.team1||'TBD', t2:d.team2||'TBD'}; }
+  if(m===101||m===102){ const id='sf_'+(m-101); const d=ST.bScores[id]||{}; return {id, t1:d.team1||'TBD', t2:d.team2||'TBD'}; }
+  if(m===103){ const d=ST.bScores.third_0||{}; return {id:'third_0', t1:d.team1||'TBD', t2:d.team2||'TBD'}; }
+  if(m===104){ const d=ST.bScores.final_0||{}; return {id:'final_0', t1:d.team1||'TBD', t2:d.team2||'TBD'}; }
+  return {id:null, t1:'TBD', t2:'TBD'};
+}
+function openKoMatch(m){
+  if(typeof KO_BY_M==='undefined') return;
+  const ko=KO_BY_M[m]; if(!ko) return;
+  const r=resolveKoMatch(m); if(!r.id) return;
+  openBracketModal(r.id, r.t1, r.t2, `M${m} · ${ko.round} · ${ko.venue}`);
+}
+function renderKnockoutSchedule(){
+  const el=document.getElementById('koSchedule');
+  if(!el||typeof KO_SCHEDULE==='undefined') return;
+  const order=['Round of 32','Round of 16','Quarter-final','Semi-final','Third-place play-off','Final'];
+  const wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fmt=iso=>{ const d=new Date(iso+'T00:00:00Z'); return `${wd[d.getUTCDay()]} ${d.getUTCDate()} ${mo[d.getUTCMonth()]}`; };
+  const byR={}; KO_SCHEDULE.forEach(k=>{ (byR[k.round]=byR[k.round]||[]).push(k); });
+  let html=`<div class="card" style="margin-top:var(--sp-5)">
+    <div class="card-header"><span class="card-title">🗓️ Knockout Schedule</span><span class="pill blue" style="margin-left:auto">All times UK · Tap to enter score</span></div>`;
+  order.forEach(round=>{
+    const rows=(byR[round]||[]).slice().sort((a,b)=>(a.date+a.ko).localeCompare(b.date+b.ko));
+    if(!rows.length) return;
+    html+=`<div class="ko-round-head">${round} <span>${rows.length} match${rows.length!==1?'es':''}</span></div>`;
+    html+=rows.map(k=>{
+      const r=resolveKoMatch(k.m);
+      const sd=(r.id && ST.bScores[r.id]) ? ST.bScores[r.id] : null;
+      const hasScore=!!(sd && sd.s1!==undefined && sd.s2!==undefined);
+      const fixDisplay=(k.round!=='Round of 32' && r.t1!=='TBD' && r.t2!=='TBD')
+        ? `${r.t1} v ${r.t2}` : k.fix;
+      const scoreBadge=hasScore ? ` <span class="ko-score-pill">${sd.s1}–${sd.s2}</span>` : '';
+      const canOpen=r.id?`onclick="openKoMatch(${k.m})" style="cursor:pointer"`:'' ;
+      return `<div class="ko-row${hasScore?' has-score':''}" ${canOpen}>
+        <span class="ko-m">M${k.m}</span>
+        <span class="ko-when"><b>${fmt(k.date)}</b><span class="ko-time">${k.ko} UK</span></span>
+        <span class="ko-fix">${fixDisplay}${scoreBadge}</span>
+        <span class="ko-venue">${k.venue}<span class="ko-country">${k.country}</span></span>
+      </div>`;
+    }).join('');
+  });
+  html+=`</div>`;
+  el.innerHTML=html;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -9158,6 +9261,7 @@ function initSimulator(){
 buildGroupFilter();
 renderGroups();
 renderBracket();
+renderKnockoutSchedule();
 renderScorers();
 renderDashboard();
 initSimulator();
@@ -14680,6 +14784,14 @@ function riskColour(r){ if(r==null) return "var(--text-muted)"; if(r>=2.5) retur
 let playerMode="club", curMatch={a:null,b:null};
 const HOSTS={MEX:1,USA:1,CAN:1};
 function playerSrc(mode){ return mode==="intl" ? (typeof INTL!=="undefined"?INTL:[]) : PLAYERS; }
+function tournBadge(code,name){
+  if(typeof TOURN_PLAYERS==="undefined") return "";
+  const t=TOURN_PLAYERS[code]; if(!t||!name) return "";
+  const key=name.normalize("NFKD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9 ]/g,"").trim();
+  const e=t[key]; if(!e) return "";
+  const parts=[]; if(e.y) parts.push("🟨"+e.y); if(e.r) parts.push("🟥"+e.r);
+  return parts.length?`<span title="Booked this tournament" style="margin-left:.35rem;font-size:.64rem;font-weight:700;padding:.05rem .35rem;border-radius:6px;background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn);white-space:nowrap">${parts.join(" ")}</span>`:"";
+}
 function playerColumn(team,mode){
   const all=playerSrc(mode).filter(p=>p.t===team.c);
   const scored=all.filter(p=>p.r!=null).sort((a,b)=>b.r-a.r);
@@ -14690,7 +14802,7 @@ function playerColumn(team,mode){
     return `<li style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.4rem 0;border-top:1px solid var(--border)">
       <span style="min-width:0">
         <span class="faint num" style="font-size:.7rem">${esc(p.p||'')}</span>
-        <strong style="font-size:.9rem">${esc(p.n)}</strong>${ls}
+        <strong style="font-size:.9rem">${esc(p.n)}</strong>${ls}${tournBadge(p.t,p.n)}
         <span class="faint" style="display:block;font-size:.72rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.cl||'')}</span>
       </span>
       <span style="text-align:right;flex:none">
@@ -15088,7 +15200,54 @@ async function exportMatchupPNG(a,b){
 function roundRect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
 
 // ---- referees ----
+function renderTournRefs(){
+  const wrap=$("tournRefOut"); if(!wrap||typeof TOURN_REFS==="undefined"||!TOURN_REFS.length) return;
+  const cpmCol=v=>v>=5?"var(--danger)":v>=4?"var(--warn)":v>=3?"var(--good)":"var(--text-2)";
+  const refKey=s=>(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[’']/g,"").replace(/[^a-z0-9]+/g," ").trim();
+  const baseFor=r=>{
+    if(typeof REFS==="undefined") return null;
+    const t=refKey(r.n.replace(/\s*\([^)]*\)\s*$/,"")), tt=t.split(" ");
+    let m=REFS.find(x=>refKey(x.n)===t); if(m) return m;
+    return REFS.find(x=>{ const xt=refKey(x.n).split(" "); if(xt[0]!==tt[0]) return false;
+      const small=xt.length<=tt.length?xt:tt, big=new Set(xt.length<=tt.length?tt:xt);
+      return small.every(tok=>big.has(tok)); })||null;
+  };
+  const rows=[...TOURN_REFS].sort((a,b)=>b.cpm-a.cpm).map(r=>{
+    const base=baseFor(r);
+    const sfx=(r.n.match(/\s*(\([^)]*\))\s*$/)||[,""])[1];
+    const name=base?esc(base.n)+(sfx?" "+sfx:""):esc(r.n);
+    let career='<span class="faint">—</span>';
+    if(base&&base.ypg!=null){
+      const ypm=r.m?r.y/r.m:0, d=ypm-base.ypg;
+      const col=d>=1?"var(--danger)":d<=-1?"var(--good)":"var(--text-2)";
+      const arr=d>=1?"▲":d<=-1?"▼":"▬";
+      career=`<span class="num">${base.ypg.toFixed(1)}</span> <span style="color:${col};font-size:.76rem" title="live yellows/match vs career">${arr}${d>=0?"+":""}${d.toFixed(1)}</span>`;
+    }
+    return `<tr><td style="padding:.45rem .7rem">${name}</td>`+
+    `<td style="text-align:center" class="num muted">${r.m}</td>`+
+    `<td style="text-align:center" class="num">${r.y}</td>`+
+    `<td style="text-align:center" class="num">${r.rc?'<span style="color:var(--danger)">'+r.rc+'</span>':'<span class="faint">–</span>'}</td>`+
+    `<td style="text-align:right"><span class="display num" style="font-size:1.02rem;color:${cpmCol(r.cpm)}">${r.cpm.toFixed(2)}</span></td>`+
+    `<td style="text-align:right">${career}</td></tr>`;
+  }).join("");
+  wrap.innerHTML=
+    `<div class="surface" style="border-radius:12px;padding:.7rem 1rem;margin-bottom:1rem">
+      <h2 style="margin:0;font-size:1.05rem">Referee strictness · this tournament</h2>
+      <p class="muted" style="margin:.25rem 0 0;font-size:.8rem">Actual cards per match from ${typeof TOURN_MATCHES!=="undefined"?TOURN_MATCHES:"the"} matches played. Officials via football-data.org, cards from post-match reports. The career column is each ref's pre-tournament yellows/game from the watchlist below, with ▲/▼ showing whether they're carding above or below it.</p>
+    </div>
+    <div class="surface" style="border-radius:12px;overflow:auto;margin-bottom:1.4rem;max-height:60vh">
+      <table><caption class="visually-hidden">Tournament referee strictness</caption><thead><tr>
+        <th scope="col" style="text-align:left;padding:.6rem .7rem">Referee</th>
+        <th scope="col" style="text-align:center;padding:.6rem .5rem">M</th>
+        <th scope="col" style="text-align:center;padding:.6rem .5rem">🟨</th>
+        <th scope="col" style="text-align:center;padding:.6rem .5rem">🟥</th>
+        <th scope="col" style="text-align:right;padding:.6rem .7rem">Cards / match</th>
+        <th scope="col" style="text-align:right;padding:.6rem .7rem">Career 🟨/g</th>
+      </tr></thead><tbody>${rows}</tbody></table>
+    </div>`;
+}
 function renderRefs(){
+  renderTournRefs();
   const rows=[...REFS].sort((a,b)=>(b.ypg==null?-1:b.ypg)-(a.ypg==null?-1:a.ypg));
   const tb=$("refRows"); tb.innerHTML="";
   rows.forEach(r=>{
@@ -15508,23 +15667,141 @@ const FD_KNOCKOUT=[
   {st:"THIRD_PLACE",d:"2026-07-18 21:00",hc:null,hf:"",hn:null,ac:null,af:"",an:null,sc:null,status:"TIMED"},
   {st:"FINAL",d:"2026-07-19 19:00",hc:null,hf:"",hn:null,ac:null,af:"",an:null,sc:null,status:"TIMED"},
 ];
+// Bracket metadata from the official WC26 knockout schedule, keyed by UTC kick-off.
+// slH/slA = bracket slot (A1=winner, A2=runner-up, 3rd=best third, W##=winner of match ##).
+// Confirmed teams (hn/an/hf/af/ref) override slot text once known.
+const KO_META={
+  "2026-06-28 19:00":{m:73,v:"Los Angeles",slH:"A 2nd",slA:"B 2nd",hn:"South Africa",hf:"🇿🇦",an:"Canada",af:"🇨🇦",ref:"João Pinheiro (POR)"},
+  "2026-06-29 17:00":{m:76,v:"Houston",slH:"C 1st",slA:"F 2nd",hn:"Brazil",hf:"🇧🇷",an:"Japan",af:"🇯🇵",ref:"Maurizio Mariani (ITA)"},
+  "2026-06-29 20:30":{m:74,v:"Foxborough",slH:"E 1st",slA:"3rd A/B/C/D/F",hn:"Germany",hf:"🇩🇪",an:"Paraguay",af:"🇵🇾",ref:"Jalal Jayed (MAR)"},
+  "2026-06-30 01:00":{m:75,v:"Monterrey",slH:"F 1st",slA:"C 2nd",hn:"Netherlands",hf:"🇳🇱",an:"Morocco",af:"🇲🇦",ref:"Wilton Sampaio (BRA)"},
+  "2026-06-30 17:00":{m:78,v:"Arlington",slH:"E 2nd",slA:"I 2nd",hn:"Côte d'Ivoire",hf:"🇨🇮",an:"Norway",af:"🇳🇴"},
+  "2026-06-30 21:00":{m:77,v:"New York/NJ",slH:"I 1st",slA:"3rd C/D/F/G/H",hn:"France",hf:"🇫🇷",an:"Sweden",af:"🇸🇪"},
+  "2026-07-01 01:00":{m:79,v:"Mexico City",slH:"A 1st",slA:"3rd C/E/F/H/I",hn:"Mexico",hf:"🇲🇽",an:"Ecuador",af:"🇪🇨"},
+  "2026-07-01 16:00":{m:80,v:"Atlanta",slH:"L 1st",slA:"3rd E/H/I/J/K",hn:"England",hf:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",an:"Congo DR",af:"🇨🇩"},
+  "2026-07-01 20:00":{m:82,v:"Seattle",slH:"G 1st",slA:"3rd A/E/H/I/J",hn:"Belgium",hf:"🇧🇪",an:"Senegal",af:"🇸🇳"},
+  "2026-07-02 00:00":{m:81,v:"San Francisco",slH:"D 1st",slA:"3rd B/E/F/I/J",hn:"United States",hf:"🇺🇸",an:"Bosnia-Herzegovina",af:"🇧🇦"},
+  "2026-07-02 19:00":{m:84,v:"Los Angeles",slH:"H 1st",slA:"J 2nd",hn:"Spain",hf:"🇪🇸",an:"Austria",af:"🇦🇹"},
+  "2026-07-02 23:00":{m:83,v:"Toronto",slH:"K 2nd",slA:"L 2nd",hn:"Portugal",hf:"🇵🇹",an:"Croatia",af:"🇭🇷"},
+  "2026-07-03 03:00":{m:85,v:"Vancouver",slH:"B 1st",slA:"3rd E/F/G/I/J",hn:"Switzerland",hf:"🇨🇭",an:"Algeria",af:"🇩🇿"},
+  "2026-07-03 18:00":{m:88,v:"Arlington",slH:"D 2nd",slA:"G 2nd",hn:"Australia",hf:"🇦🇺",an:"Egypt",af:"🇪🇬"},
+  "2026-07-03 22:00":{m:86,v:"Miami",slH:"J 1st",slA:"H 2nd",hn:"Argentina",hf:"🇦🇷",an:"Cape Verde",af:"🇨🇻"},
+  "2026-07-04 01:30":{m:87,v:"Kansas City",slH:"K 1st",slA:"3rd D/E/I/J/L",hn:"Colombia",hf:"🇨🇴",an:"Ghana",af:"🇬🇭"},
+  "2026-07-04 17:00":{m:90,v:"Houston",slH:"W73",slA:"W75"},
+  "2026-07-04 21:00":{m:89,v:"Philadelphia",slH:"W74",slA:"W77"},
+  "2026-07-05 20:00":{m:91,v:"New York/NJ",slH:"W76",slA:"W78"},
+  "2026-07-06 00:00":{m:92,v:"Mexico City",slH:"W79",slA:"W80"},
+  "2026-07-06 19:00":{m:93,v:"Arlington",slH:"W83",slA:"W84"},
+  "2026-07-07 00:00":{m:94,v:"Seattle",slH:"W81",slA:"W82"},
+  "2026-07-07 16:00":{m:95,v:"Atlanta",slH:"W86",slA:"W88"},
+  "2026-07-07 20:00":{m:96,v:"Vancouver",slH:"W85",slA:"W87"},
+  "2026-07-09 20:00":{m:97,v:"Foxborough",slH:"W89",slA:"W90"},
+  "2026-07-10 19:00":{m:98,v:"Los Angeles",slH:"W93",slA:"W94"},
+  "2026-07-11 21:00":{m:99,v:"Miami",slH:"W91",slA:"W92"},
+  "2026-07-12 01:00":{m:100,v:"Kansas City",slH:"W95",slA:"W96"},
+  "2026-07-14 19:00":{m:101,v:"Arlington",slH:"W97",slA:"W98"},
+  "2026-07-15 19:00":{m:102,v:"Atlanta",slH:"W99",slA:"W100"},
+  "2026-07-18 21:00":{m:103,v:"Miami",slH:"L101",slA:"L102"},
+  "2026-07-19 19:00":{m:104,v:"New York/NJ",slH:"W101",slA:"W102"},
+};
 
+function renderKoHeat(){
+  var wrap=document.getElementById('koHeatOut'); if(!wrap||typeof KO_META==='undefined') return;
+  var tMap={};
+  if(typeof TOURN_REFS!=='undefined') TOURN_REFS.forEach(function(r){
+    var name=r.n.replace(/\s*\(.*\)$/,'').trim();
+    tMap[name.toLowerCase()]=r;
+    tMap[name.split(' ').pop().toLowerCase()]=r;
+  });
+  var rMap={};
+  if(typeof REFS!=='undefined') REFS.forEach(function(r){ rMap[r.n.toLowerCase()]=r; });
+  function lookupRef(refStr){
+    if(!refStr) return {t:null,r:null};
+    var name=refStr.replace(/\s*\(.*\)$/,'').trim(), low=name.toLowerCase();
+    var last=name.split(' ').pop().toLowerCase();
+    var t=tMap[low]||tMap[last]||null;
+    if(!t){ for(var k in tMap){ if(k.indexOf(last)>=0){ t=tMap[k]; break; } } }
+    var r=rMap[low]||null;
+    if(!r){ for(var k2 in rMap){ if(rMap[k2].n.toLowerCase().indexOf(last)>=0){ r=rMap[k2]; break; } } }
+    return {t:t,r:r};
+  }
+  function heatColor(v){
+    if(v===null||v===undefined) return '#6b7280';
+    if(v>=5) return '#dc2626';
+    if(v>=4) return '#ea580c';
+    if(v>=3.5) return '#d97706';
+    if(v>=3) return '#ca8a04';
+    if(v>=2) return '#65a30d';
+    return '#16a34a';
+  }
+  function stageLbl(m){
+    if(m>=73&&m<=88) return 'R32';
+    if(m>=89&&m<=96) return 'R16';
+    if(m>=97&&m<=100) return 'QF';
+    if(m===101||m===102) return 'SF';
+    if(m===103) return '3P';
+    if(m===104) return 'F';
+    return '';
+  }
+  var entries=Object.keys(KO_META).map(function(d){ return {d:d,x:KO_META[d]}; }).sort(function(a,b){ return a.x.m-b.x.m; });
+  var rows=entries.map(function(e){
+    var x=e.x, ref=x.ref||'';
+    var lu=lookupRef(ref);
+    var cpm=lu.t?lu.t.cpm:null, ypg=lu.r?lu.r.ypg:null;
+    var val=cpm!==null?cpm:ypg, src=cpm!==null?'WC26':ypg!==null?'hist':'—';
+    var color=heatColor(val);
+    var badge=ref
+      ?'<span style="background:'+color+';color:#fff;border-radius:4px;padding:2px 7px;font-size:.71rem;font-weight:700;letter-spacing:.02em">'+(val!==null?val.toFixed(1):'?')+'</span>'
+      :'<span style="background:var(--border);color:var(--muted);border-radius:4px;padding:2px 7px;font-size:.71rem">TBD</span>';
+    var detail=lu.t?lu.t.m+'gm · '+lu.t.y+'Y'+(lu.t.rc?'+'+lu.t.rc+'R':''):ypg!==null?'~'+ypg.toFixed(1)+'/gm pre-WC':'';
+    var home=x.hn?((x.hf?x.hf+' ':'')+esc(x.hn)):'<span class="faint">'+esc(x.slH||'TBD')+'</span>';
+    var away=x.an?((x.af?x.af+' ':'')+esc(x.an)):'<span class="faint">'+esc(x.slA||'TBD')+'</span>';
+    return '<tr style="border-top:1px solid var(--border)">'+
+      '<td style="padding:.3rem .55rem;font-size:.7rem;font-family:monospace;font-weight:700;white-space:nowrap;color:var(--muted)">'+stageLbl(x.m)+' M'+x.m+'</td>'+
+      '<td style="padding:.3rem .55rem;font-size:.79rem">'+home+' <span class="faint">v</span> '+away+'</td>'+
+      '<td style="padding:.3rem .55rem;font-size:.74rem;max-width:9rem">'+esc(ref||'—')+'</td>'+
+      '<td style="padding:.3rem .55rem;font-size:.69rem;color:var(--muted);white-space:nowrap">'+esc(detail)+'</td>'+
+      '<td style="padding:.3rem .55rem;text-align:right;white-space:nowrap">'+badge+' <span style="font-size:.63rem;color:var(--muted)">'+src+'</span></td>'+
+    '</tr>';
+  }).join('');
+  var legend=['<5 ','<4 ','<3.5','<3 ','<2 '].map(function(t,i){
+    var colors=['#dc2626','#ea580c','#d97706','#ca8a04','#65a30d'];
+    return '<span style="display:inline-flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:2px;background:'+colors[i]+'"></span><span style="font-size:.63rem">'+t+'</span></span>';
+  }).join(' ');
+  wrap.innerHTML='<div class="surface" style="border-radius:12px;overflow:hidden;margin-bottom:.9rem">'+
+    '<div style="padding:.5rem .75rem;font-weight:700;font-family:Bricolage Grotesque,sans-serif;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem">'+
+    '<span>Referee heat board</span>'+
+    '<span style="display:flex;gap:.5rem;align-items:center">'+legend+'<span class="faint" style="font-size:.7rem;font-weight:400">cards/match</span></span></div>'+
+    '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><tbody>'+rows+'</tbody></table></div></div>';
+}
 function renderKnockout(){
   var wrap=document.getElementById('knockoutOut'); if(!wrap||typeof FD_KNOCKOUT==='undefined') return;
   var order=['LAST_32','LAST_16','QUARTER_FINALS','SEMI_FINALS','THIRD_PLACE','FINAL'];
   var byStage={}; FD_KNOCKOUT.forEach(function(m){ (byStage[m.st]=byStage[m.st]||[]).push(m); });
   var fmt=function(d){ try{ return fmtFixture({d:d}); }catch(e){ return d; } };
-  var side=function(c,f,n){ return c?((f?f+' ':'')+esc(n)):'<span class="faint">TBD</span>'; };
-  var head='<div class="surface" style="border-radius:12px;padding:.7rem 1rem;margin-bottom:1rem"><h2 style="margin:0;font-size:1.05rem">Knockout bracket</h2><p class="muted" style="margin:.25rem 0 0;font-size:.8rem">Schedule from football-data.org, 28 Jun to 19 Jul. Teams fill in as the groups finish and scores update on refresh. Kick-offs in BST, with Seychelles time added for the 5 to 14 July window.</p></div>';
+  var meta=function(m){ return (typeof KO_META!=='undefined'&&KO_META[m.d])||{}; };
+  var sideK=function(c,f,n,slot){ return (c||n)?((f?f+' ':'')+esc(n)):'<span class="faint">'+esc(slot||'TBD')+'</span>'; };
+  var head='<div class="surface" style="border-radius:12px;padding:.7rem 1rem;margin-bottom:1rem"><h2 style="margin:0;font-size:1.05rem">Knockout bracket</h2><p class="muted" style="margin:.25rem 0 0;font-size:.8rem">Full 32-tie schedule, 28 Jun to 19 Jul. Slots: A1 = Group A winner, A2 = runner-up, 3rd = best third-placed, W## = winner of match ##. Teams &amp; referees fill in as ties confirm; kick-offs shown in your local time.</p></div>';
   var sections=order.filter(function(s){return byStage[s];}).map(function(s){
     var rows=byStage[s].map(function(m){
+      var x=meta(m);
+      var hn=m.hn||x.hn, hf=m.hf||x.hf, an=m.an||x.an, af=m.af||x.af;
       var right=m.sc?('<span class="num"><strong>'+m.sc+'</strong></span>'):'<span class="faint num" style="font-size:.76rem">'+fmt(m.d)+'</span>';
-      return '<div style="display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.45rem .75rem;border-top:1px solid var(--border)"><span>'+side(m.hc,m.hf,m.hn)+' <span class="faint">v</span> '+side(m.ac,m.af,m.an)+'</span>'+right+'</div>';
+      var tag=x.m?('<span class="faint num" style="font-size:.66rem">M'+x.m+'</span> '):'';
+      var sub=[x.v,x.ref].filter(Boolean).map(esc).join(' · ');
+      var subline=sub?'<div class="faint" style="font-size:.66rem;margin-top:.15rem">'+sub+'</div>':'';
+      return '<div style="padding:.45rem .75rem;border-top:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;gap:.6rem"><span>'+tag+sideK(m.hc,hf,hn,x.slH)+' <span class="faint">v</span> '+sideK(m.ac,af,an,x.slA)+'</span>'+right+'</div>'+subline+'</div>';
     }).join('');
     return '<div class="surface" style="border-radius:12px;overflow:hidden;margin-bottom:.9rem"><div style="padding:.5rem .75rem;font-weight:700;font-family:Bricolage Grotesque,sans-serif;border-bottom:1px solid var(--border);display:flex;justify-content:space-between"><span>'+((typeof FD_STAGE_LABELS!=='undefined'&&FD_STAGE_LABELS[s])||s)+'</span><span class="faint" style="font-weight:600;font-size:.76rem">'+byStage[s].length+' ties</span></div>'+rows+'</div>';
   }).join('');
   wrap.innerHTML=head+sections;
 }
+
+// Auto-generated by build_tourn.py from WC26 Discipline Dashboard + MATCH_REF data.
+const TOURN_MATCHES=72;
+const TOURN_TEAMS={"MEX": {"y": 2, "r": 1}, "RSA": {"y": 5, "r": 2}, "KOR": {"y": 4, "r": 0}, "CAN": {"y": 5, "r": 0}, "BIH": {"y": 6, "r": 1}, "USA": {"y": 5, "r": 0}, "PAR": {"y": 7, "r": 1}, "HAI": {"y": 6, "r": 0}, "SCO": {"y": 5, "r": 0}, "TUR": {"y": 2, "r": 0}, "BRA": {"y": 5, "r": 0}, "QAT": {"y": 4, "r": 2}, "SUI": {"y": 3, "r": 0}, "CIV": {"y": 4, "r": 0}, "ECU": {"y": 5, "r": 0}, "NED": {"y": 3, "r": 0}, "TUN": {"y": 1, "r": 0}, "KSA": {"y": 6, "r": 0}, "ESP": {"y": 2, "r": 0}, "CPV": {"y": 4, "r": 0}, "IRN": {"y": 6, "r": 0}, "BEL": {"y": 3, "r": 1}, "EGY": {"y": 6, "r": 0}, "IRQ": {"y": 4, "r": 1}, "AUT": {"y": 4, "r": 0}, "GHA": {"y": 3, "r": 0}, "PAN": {"y": 5, "r": 0}, "POR": {"y": 4, "r": 0}, "COD": {"y": 5, "r": 0}, "UZB": {"y": 4, "r": 0}, "COL": {"y": 4, "r": 0}, "CZE": {"y": 1, "r": 0}, "MAR": {"y": 2, "r": 0}, "AUS": {"y": 5, "r": 0}, "CUW": {"y": 7, "r": 0}, "SWE": {"y": 5, "r": 0}, "URU": {"y": 5, "r": 1}, "NZL": {"y": 4, "r": 0}, "ARG": {"y": 2, "r": 0}, "JOR": {"y": 4, "r": 0}, "ALG": {"y": 1, "r": 0}, "ENG": {"y": 2, "r": 0}, "CRO": {"y": 2, "r": 0}, "GER": {"y": 1, "r": 0}, "JPN": {"y": 1, "r": 0}, "NOR": {"y": 1, "r": 0}, "FRA": {"y": 1, "r": 0}, "SEN": {"y": 2, "r": 0}};
+const TOURN_PLAYERS={"MEX": {"brian gutierrez": {"y": 1, "r": 0}, "cesar montes": {"y": 0, "r": 1}, "edson alvarez": {"y": 1, "r": 0}}, "RSA": {"teboho mokoena": {"y": 2, "r": 0}, "sphephelo sithole": {"y": 0, "r": 1}, "nkosinathi sibisi": {"y": 1, "r": 0}, "themba zwane": {"y": 0, "r": 1}, "thalente mbatha": {"y": 1, "r": 0}, "aubrey modiba": {"y": 1, "r": 0}}, "KOR": {"lee": {"y": 2, "r": 0}, "paik": {"y": 1, "r": 0}, "cho": {"y": 1, "r": 0}}, "CAN": {"alistair johnston": {"y": 1, "r": 0}, "luc fougerolles": {"y": 1, "r": 0}, "derek cornelius": {"y": 1, "r": 0}, "cyle larin": {"y": 1, "r": 0}, "liam millar": {"y": 1, "r": 0}}, "BIH": {"ermedin demirovic": {"y": 1, "r": 0}, "nikola katic": {"y": 1, "r": 0}, "jovo lukic": {"y": 1, "r": 0}, "tarik muharemovic": {"y": 0, "r": 1}, "amar dedic": {"y": 1, "r": 0}, "edin dzeko": {"y": 1, "r": 0}, "ermin mahmic": {"y": 1, "r": 0}}, "USA": {"tyler adams": {"y": 1, "r": 0}, "chris richards": {"y": 1, "r": 0}, "antonee robinson": {"y": 1, "r": 0}, "balogun": {"y": 1, "r": 0}, "sebastian berhalter": {"y": 1, "r": 0}}, "PAR": {"jose caceres": {"y": 1, "r": 0}, "junior alonso": {"y": 1, "r": 0}, "diego gomez": {"y": 2, "r": 0}, "miguel almiron": {"y": 1, "r": 1}, "alex arce": {"y": 1, "r": 0}, "matias galarza": {"y": 1, "r": 0}}, "HAI": {"bellegarde": {"y": 1, "r": 0}, "carlens arcus": {"y": 1, "r": 0}, "danley jean": {"y": 1, "r": 0}, "frantzdy pierrot": {"y": 1, "r": 0}, "johny placide": {"y": 1, "r": 0}, "josue casimir": {"y": 1, "r": 0}}, "SCO": {"aaron hickey": {"y": 1, "r": 0}, "duverne": {"y": 1, "r": 0}, "findlay curtis": {"y": 1, "r": 0}, "andy robertson": {"y": 1, "r": 0}, "ryan christie": {"y": 1, "r": 0}}, "TUR": {"yunus akgun": {"y": 1, "r": 0}, "eren elmali": {"y": 1, "r": 0}}, "BRA": {"casemiro": {"y": 1, "r": 0}, "ibanez": {"y": 1, "r": 0}, "santos": {"y": 1, "r": 0}, "danilo": {"y": 1, "r": 0}, "ryan fabinho": {"y": 1, "r": 0}}, "QAT": {"abunada": {"y": 1, "r": 0}, "gaber": {"y": 1, "r": 0}, "derek homam": {"y": 0, "r": 1}, "richie assim": {"y": 0, "r": 1}, "niko ahmed": {"y": 1, "r": 0}, "arjan ahmed": {"y": 1, "r": 0}}, "SUI": {"denis zakaria": {"y": 1, "r": 0}, "nico elvedi": {"y": 1, "r": 0}, "granit xhaka": {"y": 1, "r": 0}}, "CIV": {"seko fofana": {"y": 1, "r": 0}, "franck kessie": {"y": 1, "r": 0}, "guela doue": {"y": 1, "r": 0}, "nicolas pepe": {"y": 1, "r": 0}}, "ECU": {"jackson porozo": {"y": 1, "r": 0}, "jordy alcivar": {"y": 1, "r": 0}, "piero hincapie": {"y": 1, "r": 0}, "plata": {"y": 1, "r": 0}, "alan franco": {"y": 1, "r": 0}}, "NED": {"micky ven": {"y": 1, "r": 0}, "summerville": {"y": 1, "r": 0}, "depay": {"y": 1, "r": 0}}, "TUN": {"rani khedira": {"y": 1, "r": 0}}, "KSA": {"alamri": {"y": 1, "r": 0}, "salem": {"y": 1, "r": 0}, "martin mohamed": {"y": 1, "r": 0}, "nasser": {"y": 1, "r": 0}, "feras": {"y": 1, "r": 0}, "saud": {"y": 1, "r": 0}}, "ESP": {"pedri": {"y": 1, "r": 0}, "alex baena": {"y": 1, "r": 0}}, "CPV": {"sidny": {"y": 1, "r": 0}, "sebastian diney": {"y": 1, "r": 0}, "mathias sidny": {"y": 1, "r": 0}, "pina": {"y": 1, "r": 0}}, "IRN": {"ehsan hajisafi": {"y": 1, "r": 0}, "saeid ezatolahi": {"y": 2, "r": 0}, "shoja khalilzadeh": {"y": 1, "r": 0}, "hossein kanani": {"y": 1, "r": 0}, "ali nemati": {"y": 1, "r": 0}}, "BEL": {"timothy castagne": {"y": 1, "r": 0}, "maxim cuyper": {"y": 1, "r": 0}, "lukaku": {"y": 1, "r": 0}, "nathan ngoy": {"y": 0, "r": 1}}, "EGY": {"thomas ahmed": {"y": 1, "r": 0}, "amadou marawan": {"y": 1, "r": 0}, "liberato mohanad": {"y": 1, "r": 0}, "lashin": {"y": 1, "r": 0}, "saber": {"y": 1, "r": 0}, "ibrahim": {"y": 1, "r": 0}}, "IRQ": {"tahseen": {"y": 1, "r": 0}, "amir": {"y": 2, "r": 0}, "abdoulaye rebin": {"y": 0, "r": 1}, "merchas": {"y": 1, "r": 0}}, "AUT": {"marcel sabitzer": {"y": 1, "r": 0}, "stefan posch": {"y": 1, "r": 0}, "konrad laimer": {"y": 1, "r": 0}, "marko arnautovic": {"y": 1, "r": 0}}, "GHA": {"caleb yirenkyi": {"y": 1, "r": 0}, "inaki williams": {"y": 1, "r": 0}, "peprah oppong": {"y": 1, "r": 0}}, "PAN": {"cesar blackman": {"y": 1, "r": 0}, "carlos harvey": {"y": 1, "r": 0}, "yoel barcenas": {"y": 1, "r": 0}, "andres andrade": {"y": 1, "r": 0}, "fajardo": {"y": 1, "r": 0}}, "POR": {"araujo": {"y": 1, "r": 0}, "silva": {"y": 1, "r": 0}, "semedo": {"y": 1, "r": 0}, "veiga": {"y": 1, "r": 0}}, "COD": {"chancel mbemba": {"y": 1, "r": 0}, "charles pickel": {"y": 1, "r": 0}, "nathanael mbuku": {"y": 1, "r": 0}, "samuel moutoussamy": {"y": 1, "r": 0}, "noah sadiki": {"y": 1, "r": 0}}, "UZB": {"abdukodir khusanov": {"y": 2, "r": 0}, "odiljon xamrobekov": {"y": 1, "r": 0}, "sherzod nasrullaev": {"y": 1, "r": 0}}, "COL": {"johan mojica": {"y": 1, "r": 0}, "jhon lucumi": {"y": 1, "r": 0}, "jefferson lerma": {"y": 1, "r": 0}, "gustavo puerta": {"y": 1, "r": 0}}, "CZE": {"ladislav krejci": {"y": 1, "r": 0}}, "MAR": {"issa diop": {"y": 1, "r": 0}, "rahimi": {"y": 1, "r": 0}}, "AUS": {"alessandro circati": {"y": 1, "r": 0}, "jacob italiano": {"y": 1, "r": 0}, "jordan bos": {"y": 1, "r": 0}, "harry souttar": {"y": 1, "r": 0}, "jackson irvine": {"y": 1, "r": 0}}, "CUW": {"jurien gaari": {"y": 1, "r": 0}, "juninho bacuna": {"y": 2, "r": 0}, "livano comenencia": {"y": 1, "r": 0}, "leandro bacuna": {"y": 1, "r": 0}, "gervane kastaneer": {"y": 1, "r": 0}, "kastaneer": {"y": 1, "r": 0}}, "SWE": {"gabriel gudmundsson": {"y": 1, "r": 0}, "yasin ayari": {"y": 1, "r": 0}, "lucas bergvall": {"y": 1, "r": 0}, "isak hien": {"y": 1, "r": 0}, "viktor gyokeres": {"y": 1, "r": 0}}, "URU": {"rodrigo bentancur": {"y": 1, "r": 0}, "mathias olivera": {"y": 1, "r": 0}, "guillermo varela": {"y": 1, "r": 0}, "agustin canobbio": {"y": 0, "r": 1}, "manuel sanabria": {"y": 1, "r": 0}, "nicolas cruz": {"y": 1, "r": 0}}, "NZL": {"sarpreet singh": {"y": 1, "r": 0}, "callum omar": {"y": 1, "r": 0}, "marko stamenic": {"y": 1, "r": 0}, "elijah just": {"y": 1, "r": 0}}, "ARG": {"facundo medina": {"y": 1, "r": 0}, "leandro paredes": {"y": 1, "r": 0}}, "JOR": {"abudahab": {"y": 1, "r": 0}, "alarab": {"y": 1, "r": 0}, "abutaha": {"y": 1, "r": 0}, "abuzraiq": {"y": 1, "r": 0}}, "ALG": {"ramiz zerrouki": {"y": 1, "r": 0}}, "ENG": {"declan rice": {"y": 1, "r": 0}, "jarell quansah": {"y": 1, "r": 0}}, "CRO": {"petar sucic": {"y": 1, "r": 0}, "perisic": {"y": 1, "r": 0}}, "GER": {"aleksandar pavlovic": {"y": 1, "r": 0}}, "JPN": {"shogo taniguchi": {"y": 1, "r": 0}}, "NOR": {"patrick berg": {"y": 1, "r": 0}}, "FRA": {"aurelien tchouameni": {"y": 1, "r": 0}}, "SEN": {"abdoulaye seck": {"y": 1, "r": 0}, "pape gueye": {"y": 1, "r": 0}}};
+const TOURN_REFS=[{n:"Felix Zwayer (GER)",m:2,y:12,rc:0,cpm:6.0},{n:"Ning Ma (CHN)",m:1,y:6,rc:0,cpm:6.0},{n:"Danny Makkelie (NED)",m:2,y:9,rc:0,cpm:4.5},{n:"Alejandro Hernández Hernández (ESP)",m:1,y:4,rc:0,cpm:4.0},{n:"Cristián Garay (CHI)",m:1,y:2,rc:2,cpm:4.0},{n:"Espen Eskås (NOR)",m:1,y:4,rc:0,cpm:4.0},{n:"François Letexier (FRA)",m:2,y:8,rc:0,cpm:4.0},{n:"Ismail Elfath (USA)",m:2,y:7,rc:1,cpm:4.0},{n:"João Pinheiro (POR)",m:1,y:3,rc:1,cpm:4.0},{n:"Abdulrahman Al Jassim (QAT)",m:2,y:7,rc:0,cpm:3.5},{n:"Anthony Taylor (ENG)",m:2,y:6,rc:1,cpm:3.5},{n:"Facundo Tello (ARG)",m:2,y:7,rc:0,cpm:3.5},{n:"Ramon Abatti Abel (BRA)",m:2,y:7,rc:0,cpm:3.5},{n:"Szymon Marciniak (POL)",m:2,y:7,rc:0,cpm:3.5},{n:"Tori Penso (USA)",m:2,y:7,rc:0,cpm:3.5},{n:"Darío Herrera (ARG)",m:1,y:2,rc:1,cpm:3.0},{n:"Glenn Nyberg (SWE)",m:2,y:6,rc:0,cpm:3.0},{n:"Ivan Barton (SLV)",m:2,y:5,rc:1,cpm:3.0},{n:"Omar Mohamed Al Ali (UAE)",m:1,y:3,rc:0,cpm:3.0},{n:"Wilton Sampaio (BRA)",m:2,y:3,rc:3,cpm:3.0},{n:"Amin Omar (EGY)",m:2,y:5,rc:0,cpm:2.5},{n:"Michael Oliver (ENG)",m:2,y:5,rc:0,cpm:2.5},{n:"Mustapha Ghorbal (ALG)",m:2,y:5,rc:0,cpm:2.5},{n:"Said Martinez (HON)",m:2,y:5,rc:0,cpm:2.5},{n:"Adham Makhadmeh (JOR)",m:2,y:4,rc:0,cpm:2.0},{n:"César Ramos (MEX)",m:2,y:4,rc:0,cpm:2.0},{n:"Gustavo Tejera (URU)",m:1,y:2,rc:0,cpm:2.0},{n:"Maurizio Mariani (ITA)",m:2,y:4,rc:0,cpm:2.0},{n:"Raphael Claus (BRA)",m:1,y:2,rc:0,cpm:2.0},{n:"Slavko Vinčič (SVN)",m:2,y:4,rc:0,cpm:2.0},{n:"Drew Fischer (CAN)",m:2,y:3,rc:0,cpm:1.5},{n:"Il'giz Tantashev (UZB)",m:2,y:3,rc:0,cpm:1.5},{n:"István Kovács (ROU)",m:2,y:3,rc:0,cpm:1.5},{n:"Jesús Valenzuela (VEN)",m:2,y:3,rc:0,cpm:1.5},{n:"Pierre Atcho (GAB)",m:2,y:3,rc:0,cpm:1.5},{n:"Clément Turpin (FRA)",m:2,y:2,rc:0,cpm:1.0},{n:"Dahane Beida (MTN)",m:1,y:1,rc:0,cpm:1.0},{n:"Jalal Jayed (MAR)",m:2,y:2,rc:0,cpm:1.0},{n:"Yael Falcón (ARG)",m:2,y:2,rc:0,cpm:1.0},{n:"Alireza Faghani (IRN)",m:2,y:1,rc:0,cpm:0.5},{n:"Juan Benítez (PAR)",m:1,y:0,rc:0,cpm:0.0},{n:"Katia García (MEX)",m:1,y:0,rc:0,cpm:0.0}];
 
 // init
 groupOptions();
@@ -15646,6 +15923,7 @@ __SQ.querySelectorAll("#discFilter .disc-fbtn").forEach(b=>b.addEventListener("c
   b.setAttribute("aria-pressed","true"); _discFilt=b.dataset.f; drawDiscLog();
 }));
 renderStandings();
+renderKoHeat();
 renderKnockout();
 renderTracker();
 
@@ -15907,6 +16185,7 @@ renderResults();
   }
   function rerender(){
     try{ if(typeof renderStandings==='function') renderStandings(); }catch(e){}
+    try{ if(typeof renderKoHeat==='function') renderKoHeat(); }catch(e){}
     try{ if(typeof renderKnockout==='function') renderKnockout(); }catch(e){}
     try{ if(typeof renderResults==='function') renderResults(); }catch(e){}
   }
@@ -16337,6 +16616,43 @@ FIXTURES.forEach(f => {
 });
 
 // ============================================================
+// Round of 32 — actual draw (group stage complete, 27 Jun 2026)
+// ============================================================
+const R32_FIXTURES = [
+  { home: "South Africa", away: "Canada", date: "28 Jun", venue: "Los Angeles (SoFi)" },
+  { home: "Brazil", away: "Japan", date: "29 Jun", venue: "Houston (NRG)" },
+  { home: "Germany", away: "Paraguay", date: "29 Jun", venue: "Boston (Gillette)" },
+  { home: "Netherlands", away: "Morocco", date: "29 Jun", venue: "Monterrey (BBVA)" },
+  { home: "Ivory Coast", away: "Norway", date: "30 Jun", venue: "Dallas (AT&T)" },
+  { home: "France", away: "Sweden", date: "", venue: "New York/NJ (MetLife)" },
+  { home: "Mexico", away: "Ecuador", date: "", venue: "Mexico City (Azteca)" },
+  { home: "England", away: "DR Congo", date: "", venue: "Atlanta (Mercedes-Benz)" },
+  { home: "Belgium", away: "Senegal", date: "", venue: "Seattle (Lumen)" },
+  { home: "USA", away: "Bosnia and Herzegovina", date: "", venue: "SF Bay (Levi's)" },
+  { home: "Spain", away: "Austria", date: "", venue: "Los Angeles (SoFi)" },
+  { home: "Portugal", away: "Croatia", date: "", venue: "Toronto (BMO)" },
+  { home: "Switzerland", away: "Algeria", date: "", venue: "" },
+  { home: "Australia", away: "Egypt", date: "", venue: "" },
+  { home: "Argentina", away: "Cabo Verde", date: "", venue: "" },
+  { home: "Colombia", away: "Ghana", date: "", venue: "" }
+];
+
+R32_FIXTURES.forEach(f => {
+  f.round = 32;
+  f.homeRank = RANKINGS[f.home] || 99;
+  f.awayRank = RANKINGS[f.away] || 99;
+  f.gap = Math.abs(f.homeRank - f.awayRank);
+  f.favourite = f.homeRank < f.awayRank ? f.home : f.away;
+  f.underdog = f.homeRank < f.awayRank ? f.away : f.home;
+  f.tier = f.gap >= 40 ? "Huge" : f.gap >= 20 ? "Big" : f.gap >= 8 ? "Moderate" : "Tight";
+});
+
+const R16_COLLISIONS = [
+  ["Spain v Austria", "Portugal v Croatia"],
+  ["France v Sweden", "Germany v Paraguay"]
+];
+
+// ============================================================
 // Default player picks
 // ============================================================
 const DEFAULT_PICKS = {};
@@ -16680,10 +16996,10 @@ function defaultState() {
       3: { player: "", points: "", notes: "" }
     },
     boosters: {
-      "Wildcard": { plannedRound: "3", used: false, notes: "Rebuild around R3 mismatches" },
-      "12th Man": { plannedRound: "2", used: false, notes: "Vinicius Jr v Haiti or Kane v Ghana" },
+      "Wildcard": { plannedRound: "3", used: true, notes: "Group stage: rebuilt around R3 mismatches. Not usable in R32." },
+      "12th Man": { plannedRound: "2", used: true, notes: "Group stage: extra player on the biggest R2 mismatch." },
       "Maximum Captain": { plannedRound: "R16", used: false, notes: "Use when uncertain on captain choice" },
-      "Qualification Booster": { plannedRound: "QF", used: false, notes: "When XI heavy with progressors" },
+      "Qualification Booster": { plannedRound: "R32", used: false, notes: "Play in R32: unlimited transfers build 11 favourites, widest seed-vs-minnow gulf maximises +2 progressors." },
       "Mystery Booster": { plannedRound: "TBD", used: false, notes: "Revealed before R32" }
     },
     transfers: {
@@ -18380,6 +18696,33 @@ function renderStrategy() {
     `;
   }).join("");
   document.getElementById("defenceStackPlan").innerHTML = stackHtml;
+
+  // Round of 32 actual draw, sorted by mismatch size (biggest first)
+  const r32El = document.getElementById("r32Draw");
+  if (r32El && typeof R32_FIXTURES !== "undefined") {
+    const tierColor = { Huge: "var(--green)", Big: "var(--green)", Moderate: "var(--amber)", Tight: "var(--amber)" };
+    const sorted = [...R32_FIXTURES].sort((a, b) => b.gap - a.gap);
+    r32El.innerHTML = `
+      <table>
+        <thead><tr><th>Match (favourite first)</th><th>Ranks</th><th>Gap</th><th>Tier</th><th>Date</th></tr></thead>
+        <tbody>
+          ${sorted.map(f => {
+            const favRank = Math.min(f.homeRank, f.awayRank);
+            const undRank = Math.max(f.homeRank, f.awayRank);
+            return `
+              <tr>
+                <td><strong>${escapeHtml(f.favourite)}</strong> v ${escapeHtml(f.underdog)}</td>
+                <td style="font-size: 12px;">#${favRank} v #${undRank}</td>
+                <td>${f.gap}</td>
+                <td style="color: ${tierColor[f.tier]}; font-weight: 600;">${f.tier}</td>
+                <td style="font-size: 12px; color: var(--muted);">${escapeHtml(f.date || "—")}</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+  }
 
   // Squad spine: count mismatches per team where gap >= 30
   const teamMismatches = {};
