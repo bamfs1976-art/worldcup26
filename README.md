@@ -28,9 +28,24 @@ This is a genuine integrated rebuild, not three iframes.
   CSP) is deduplicated; each area's specialised feature logic and data are kept
   intact.
 
-`index.html` is generated from the three original apps by a local assembler
-script (CSS scoping, IIFE isolation, id de‑collision, shell composition). The
-deployable output — this folder — is self‑contained and needs no build step.
+## Maintaining this app
+
+**This repository is the single source of truth — it is maintained directly.**
+Edit `index.html` and the files in `/data/` here; the folder is self‑contained
+and needs no build step.
+
+The original three apps (`worldcupwallchart`, `wcstats`, `wc26fantasyplanner`)
+seeded the *initial* build via a one‑off local assembler (CSS scoping, IIFE
+isolation, id de‑collision, shell composition). **That workflow is retired — do
+not regenerate `index.html` from the source apps.** This repo has since been
+developed directly (discipline data, knockout/R32 bracket, the Jeopardy tab,
+match officials, fantasy matchday panels, kick‑off‑time fixes, the unified
+shell, Match Analysis, player ratings and the live‑data proxy), so a rebuild
+from the source apps would overwrite that work.
+
+To change a feature, edit it in place: Wall Chart runs in the global scope,
+Stats Desk and Fantasy inside their IIFEs (`#area-stats` / `#area-fantasy`), and
+each area's data lives in the matching `/data/*.js` file.
 
 ## Deploy
 
