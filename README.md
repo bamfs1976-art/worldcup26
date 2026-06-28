@@ -30,22 +30,23 @@ This is a genuine integrated rebuild, not three iframes.
 
 ## Maintaining this app
 
-**This repository is the single source of truth — it is maintained directly.**
-Edit `index.html` and the files in `/data/` here; the folder is self‑contained
-and needs no build step.
+`index.html` is **assembled from the three source repos** —
+[`worldcupwallchart`](https://github.com/bamfs1976-art/worldcupwallchart),
+[`wcstats`](https://github.com/bamfs1976-art/wcstats),
+[`wc26fantasyplanner`](https://github.com/bamfs1976-art/wc26fantasyplanner) — by a
+local build script (`build/build.mjs`, kept outside this repo). The script wraps
+each app in an isolated scope, scopes its CSS, de‑collides ids, dedupes the shared
+chrome, and injects the cross‑cutting layers added here: the **unified shell**,
+**Match Analysis**, **player ratings**, the **live‑data proxy**, and a fix for six
+wrong kick‑off times.
 
-The original three apps (`worldcupwallchart`, `wcstats`, `wc26fantasyplanner`)
-seeded the *initial* build via a one‑off local assembler (CSS scoping, IIFE
-isolation, id de‑collision, shell composition). **That workflow is retired — do
-not regenerate `index.html` from the source apps.** This repo has since been
-developed directly (discipline data, knockout/R32 bracket, the Jeopardy tab,
-match officials, fantasy matchday panels, kick‑off‑time fixes, the unified
-shell, Match Analysis, player ratings and the live‑data proxy), so a rebuild
-from the source apps would overwrite that work.
+**The three source repos are where wall / stats / fantasy features live.** To
+update an area, change its source repo, then rebuild and commit the regenerated
+`index.html`. Editing `index.html` here directly works for a quick fix but is
+overwritten by the next rebuild — prefer changing the source apps.
 
-To change a feature, edit it in place: Wall Chart runs in the global scope,
-Stats Desk and Fantasy inside their IIFEs (`#area-stats` / `#area-fantasy`), and
-each area's data lives in the matching `/data/*.js` file.
+Each source app is now self‑contained (its data is inline), so the only data file
+this repo loads is the generated `/data/analysis.js` (Match Analysis content).
 
 ## Deploy
 
